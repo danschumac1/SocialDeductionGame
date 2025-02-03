@@ -4,8 +4,7 @@
 A quick social deduction game where players are assigned hidden roles. The game consists of a night phase (special roles act) and a day phase (discussion and voting). The goal is for the majority (Humans) to find and eliminate the hidden threats (Robots), while the threats try to remain undetected.
 
 ## Game Components
-- Players (5+ recommended)
-- Timer (optional for discussion phase)
+~~- Players (5+ recommended)~~- Timer (optional for discussion phase)
 
 ## Main Menu
 - Click **Play**
