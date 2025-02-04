@@ -67,6 +67,38 @@ class Button:
         """Return the button's text value."""
         return self.text
 
+class ColorButton(Button):
+    '''
+    This button displays a selectable color option.
+    - Only one color button can be active at a time.
+    - Pressing a button will draw a black border around it to indicate selection.
+    - The selected color will be stored and available for retrieval.
+    '''
+    selected_color = None  # Class variable to track the selected color globally
+
+    def __init__(self, x, y, color, color_name, index):
+        super().__init__(x, y, BUTTON_WIDTH, BUTTON_HEIGHT, text="", color=color, hover_color=color, text_color=rl.BLACK, action=self.select_color)
+        self.color_value = color
+        self.color_name = color_name
+        self.index = index  # To differentiate buttons
+
+    def select_color(self):
+        """Sets the selected color globally."""
+        ColorButton.selected_color = self.color_value
+
+    def draw(self):
+        """Draw the color button with a selection indicator."""
+        super().draw()  # Draw the button itself
+        rl.draw_text(self.color_name, self.x, self.y, 20, rl.BLACK)
+
+        if ColorButton.selected_color == self.color_value:
+            rl.draw_rectangle_lines(self.x, self.y, self.width, self.height, rl.BLACK)
+
+    @staticmethod
+    def get_selected_color():
+        """Retrieve the currently selected color."""
+        return ColorButton.selected_color
+
 class Fillinable(abc.ABC):
     """
     A base class for fillable text fields.
@@ -100,7 +132,6 @@ class Fillinable(abc.ABC):
     def draw(self):
         """Draw the fillable field and label."""
         pass
-
 
 class SimpleFillinable(Fillinable):
     """A basic single-line text field that does not wrap text."""
@@ -138,7 +169,6 @@ class SimpleFillinable(Fillinable):
         box_color = rl.LIGHTGRAY if self.selected else rl.GRAY
         rl.draw_rectangle(self.x, self.y, self.width, self.height, box_color)
         rl.draw_text(self.field_value, self.x + 10, self.y + 5, 20, rl.BLACK)
-
 
 class WrapFillinable(Fillinable):
     def __init__(self, x, y, field_name, width=200, height=60):
@@ -189,3 +219,93 @@ class WrapFillinable(Fillinable):
         lines = self.field_value.split("\n")
         for i, line in enumerate(lines):
             rl.draw_text(line, self.x + 10, self.y + 5 + (i * 20), 20, rl.BLACK)
+
+class ChatWindow:
+    """A simple chat window where players can type and send messages."""
+    
+    def __init__(self, x, y, width=400, height=200, max_messages=10):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.input_text = ""
+        self.messages = []
+        self.max_messages = max_messages
+        self.selected = False  # If the input field is active
+        self.last_backspace_time = 0  # Track backspace timing
+        
+        # Submit button using the existing Button class
+        self.submit_button = Button(
+            x=self.x + self.width + 10,
+            y=self.y + self.height,
+            width=60,
+            height=30,
+            text="SEND",
+            color=rl.DARKGRAY,
+            hover_color=rl.GRAY,
+            text_color=rl.WHITE,
+            action=self.submit_message
+        )
+
+    def is_mouse_over_input(self):
+        """Check if the mouse is over the input box."""
+        return rl.check_collision_point_rec(
+            rl.get_mouse_position(), rl.Rectangle(self.x, self.y + self.height, self.width, 30)
+        )
+
+    def handle_click(self):
+        """Handle mouse clicks to activate the input box."""
+        if rl.is_mouse_button_pressed(rl.MOUSE_LEFT_BUTTON):
+            self.selected = self.is_mouse_over_input()
+
+    def handle_input(self):
+        """Handle keyboard input when the input field is selected."""
+        if not self.selected:
+            return
+
+        # Handle continuous backspace pressing
+        if rl.is_key_down(rl.KEY_BACKSPACE) and len(self.input_text) > 0:
+            current_time = time.time()
+            if current_time - self.last_backspace_time > 0.1:  # 100ms delay
+                self.input_text = self.input_text[:-1]
+                self.last_backspace_time = current_time
+
+        key = rl.get_char_pressed()
+        while key > 0:
+            if 32 <= key <= 126:  # Printable characters
+                self.input_text += chr(key)
+            key = rl.get_char_pressed()
+
+        # Submit message when Enter is pressed
+        if rl.is_key_pressed(rl.KEY_ENTER) and self.input_text.strip():
+            self.submit_message()
+
+    def submit_message(self):
+        """Submit the current message and clear input."""
+        self.messages.append(self.input_text.strip())  
+        self.input_text = ""  # Clear input box
+        
+        # Limit the message list size
+        if len(self.messages) > self.max_messages:
+            self.messages.pop(0)
+
+    def draw(self):
+        """Draw the chat window and input box."""
+        self.handle_click()
+        self.handle_input()
+
+        # Draw the chat history
+        chat_bg_color = rl.LIGHTGRAY
+        rl.draw_rectangle(self.x, self.y, self.width, self.height, chat_bg_color)
+
+        for i, msg in enumerate(reversed(self.messages)):
+            rl.draw_text(msg, self.x + 5, self.y + self.height - (i + 1) * 20 - 10, 20, rl.BLACK)
+
+        # Draw the input box
+        input_color = rl.DARKGRAY if self.selected else rl.GRAY
+        rl.draw_rectangle(self.x, self.y + self.height, self.width, 30, input_color)
+        rl.draw_text(self.input_text, self.x + 5, self.y + self.height + 5, 20, rl.WHITE)
+
+        # Draw and handle the submit button
+        self.submit_button.draw()
+        self.submit_button.click()
