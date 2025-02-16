@@ -220,10 +220,106 @@ class WrapFillinable(Fillinable):
         for i, line in enumerate(lines):
             rl.draw_text(line, self.x + 10, self.y + 5 + (i * 20), 20, rl.BLACK)
 
-class ChatWindow:
-    """A simple chat window where players can type and send messages."""
+# class ChatWindow:
+#     """A simple chat window where players can type and send messages."""
     
-    def __init__(self, x, y, width=400, height=200, max_messages=10):
+#     def __init__(self, x, y, width=400, height=200, max_messages=10):
+#         self.x = x
+#         self.y = y
+#         self.width = width
+#         self.height = height
+#         self.input_text = ""
+#         self.messages = []
+#         self.max_messages = max_messages
+#         self.selected = False  # If the input field is active
+#         self.last_backspace_time = 0  # Track backspace timing
+        
+#         # Submit button using the existing Button class
+#         self.submit_button = Button(
+#             x=self.x + self.width + 10,
+#             y=self.y + self.height,
+#             width=60,
+#             height=30,
+#             text="SEND",
+#             color=rl.DARKGRAY,
+#             hover_color=rl.GRAY,
+#             text_color=rl.WHITE,
+#             action=self.submit_message
+#         )
+
+#     def is_mouse_over_input(self):
+#         """Check if the mouse is over the input box."""
+#         return rl.check_collision_point_rec(
+#             rl.get_mouse_position(), rl.Rectangle(self.x, self.y + self.height, self.width, 30)
+#         )
+
+#     def handle_click(self):
+#         """Handle mouse clicks to activate the input box."""
+#         if rl.is_mouse_button_pressed(rl.MOUSE_LEFT_BUTTON):
+#             self.selected = self.is_mouse_over_input()
+
+#     def handle_input(self):
+#         """Handle keyboard input when the input field is selected."""
+#         if not self.selected:
+#             return
+
+#         # Handle continuous backspace pressing
+#         if rl.is_key_down(rl.KEY_BACKSPACE) and len(self.input_text) > 0:
+#             current_time = time.time()
+#             if current_time - self.last_backspace_time > 0.1:  # 100ms delay
+#                 self.input_text = self.input_text[:-1]
+#                 self.last_backspace_time = current_time
+
+#         key = rl.get_char_pressed()
+#         while key > 0:
+#             if 32 <= key <= 126:  # Printable characters
+#                 self.input_text += chr(key)
+#             key = rl.get_char_pressed()
+
+#         # Submit message when Enter is pressed
+#         if rl.is_key_pressed(rl.KEY_ENTER) and self.input_text.strip():
+#             self.submit_message()
+
+#     def submit_message(self):
+#         """Submit the current message and clear input."""
+#         self.messages.append(self.input_text.strip())  
+#         self.input_text = ""  # Clear input box
+        
+#         # Limit the message list size
+#         if len(self.messages) > self.max_messages:
+#             self.messages.pop(0)
+
+#     def draw(self):
+#         """Draw the chat window and input box."""
+#         self.handle_click()
+#         self.handle_input()
+
+#         # Draw the chat history
+#         chat_bg_color = rl.LIGHTGRAY
+#         rl.draw_rectangle(self.x, self.y, self.width, self.height, chat_bg_color)
+
+#         for i, msg in enumerate(reversed(self.messages)):
+#             rl.draw_text(msg, self.x + 5, self.y + self.height - (i + 1) * 20 - 10, 20, rl.BLACK)
+
+#         # Draw the input box
+#         input_color = rl.DARKGRAY if self.selected else rl.GRAY
+#         rl.draw_rectangle(self.x, self.y + self.height, self.width, 30, input_color)
+#         rl.draw_text(self.input_text, self.x + 5, self.y + self.height + 5, 20, rl.WHITE)
+
+#         # Draw and handle the submit button
+#         self.submit_button.draw()
+#         self.submit_button.click()
+
+import raylibpy as rl
+import asyncio
+import threading
+import time
+from websocket_client import WebSocketClient  # Import the WebSocket client
+
+class ChatWindow:
+    """A simple chat window that sends and receives messages via WebSockets."""
+
+    def __init__(self, x, y, width=400, height=200, max_messages=10, websocket_client=None):
         self.x = x
         self.y = y
         self.width = width
@@ -231,10 +327,11 @@ class ChatWindow:
         self.input_text = ""
         self.messages = []
         self.max_messages = max_messages
-        self.selected = False  # If the input field is active
-        self.last_backspace_time = 0  # Track backspace timing
+        self.selected = False
+        self.last_backspace_time = 0
+        self.websocket_client = websocket_client  # WebSocket connection
         
-        # Submit button using the existing Button class
+        # Submit button
         self.submit_button = Button(
             x=self.x + self.width + 10,
             y=self.y + self.height,
@@ -248,13 +345,11 @@ class ChatWindow:
         )
 
     def is_mouse_over_input(self):
-        """Check if the mouse is over the input box."""
         return rl.check_collision_point_rec(
             rl.get_mouse_position(), rl.Rectangle(self.x, self.y + self.height, self.width, 30)
         )
 
     def handle_click(self):
-        """Handle mouse clicks to activate the input box."""
         if rl.is_mouse_button_pressed(rl.MOUSE_LEFT_BUTTON):
             self.selected = self.is_mouse_over_input()
 
@@ -263,29 +358,33 @@ class ChatWindow:
         if not self.selected:
             return
 
-        # Handle continuous backspace pressing
         if rl.is_key_down(rl.KEY_BACKSPACE) and len(self.input_text) > 0:
             current_time = time.time()
-            if current_time - self.last_backspace_time > 0.1:  # 100ms delay
+            if current_time - self.last_backspace_time > 0.1:
                 self.input_text = self.input_text[:-1]
                 self.last_backspace_time = current_time
 
         key = rl.get_char_pressed()
         while key > 0:
-            if 32 <= key <= 126:  # Printable characters
+            if 32 <= key <= 126:
                 self.input_text += chr(key)
             key = rl.get_char_pressed()
 
-        # Submit message when Enter is pressed
         if rl.is_key_pressed(rl.KEY_ENTER) and self.input_text.strip():
             self.submit_message()
 
     def submit_message(self):
-        """Submit the current message and clear input."""
-        self.messages.append(self.input_text.strip())  
-        self.input_text = ""  # Clear input box
+        """Send the current message to the WebSocket server."""
+        message = self.input_text.strip()
+        if message and self.websocket_client:
+            asyncio.run(self.websocket_client.send_message(message))  # Send to server
         
-        # Limit the message list size
+        self.input_text = ""
+
+    def receive_message(self, message):
+        """Receive and store a message from the server."""
+        self.messages.append(message)
+
         if len(self.messages) > self.max_messages:
             self.messages.pop(0)
 
@@ -294,18 +393,13 @@ class ChatWindow:
         self.handle_click()
         self.handle_input()
 
-        # Draw the chat history
-        chat_bg_color = rl.LIGHTGRAY
-        rl.draw_rectangle(self.x, self.y, self.width, self.height, chat_bg_color)
-
+        rl.draw_rectangle(self.x, self.y, self.width, self.height, rl.LIGHTGRAY)
         for i, msg in enumerate(reversed(self.messages)):
             rl.draw_text(msg, self.x + 5, self.y + self.height - (i + 1) * 20 - 10, 20, rl.BLACK)
 
-        # Draw the input box
         input_color = rl.DARKGRAY if self.selected else rl.GRAY
         rl.draw_rectangle(self.x, self.y + self.height, self.width, 30, input_color)
         rl.draw_text(self.input_text, self.x + 5, self.y + self.height + 5, 20, rl.WHITE)
 
-        # Draw and handle the submit button
         self.submit_button.draw()
         self.submit_button.click()
