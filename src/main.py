@@ -12,7 +12,7 @@ from main_menu import main_menu
 from utils.constants import WIDTH, HEIGHT
 from game import play_game
 from setup_game import setup_game
-from utils.enums import GameState
+from utils.enums_dcs import GameState
 
 def initialize_window():
     rl.init_window(WIDTH, HEIGHT, "Carcassonne")

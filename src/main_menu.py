@@ -2,7 +2,7 @@ import raylibpy as rl
 from utils.buttons_etc import Button
 from utils.constants import (
     HEIGHT, WIDTH, BUTTON_WIDTH)
-from utils.enums import GameState
+from utils.enums_dcs import GameState
 
 def main_menu(gs):
     """

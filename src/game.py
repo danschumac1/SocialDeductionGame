@@ -24,7 +24,7 @@
 import raylibpy as rl
 import asyncio
 import threading
-from utils.enums import GameState
+from utils.enums_dcs import GameState
 from utils.buttons_etc import ChatWindow
 from websocket_client import WebSocketClient
 from utils.constants import WIDTH, HEIGHT

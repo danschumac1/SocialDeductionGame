@@ -3,7 +3,7 @@ import json
 import raylibpy as rl
 from utils.buttons_etc import Button, ColorButton, SimpleFillinable, WrapFillinable
 from utils.constants import BUTTON_WIDTH, PLAYER_COLORS, WIDTH, HEIGHT
-from utils.enums import GameState
+from utils.enums_dcs import GameState
 
 class PlayerInfoHandler:
     def __init__ (
