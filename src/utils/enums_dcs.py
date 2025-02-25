@@ -101,7 +101,7 @@ class GameSummaryBM(BaseModel):
     players_voted_off: List[str]  # List of players voted off 
     voting_history: Dict[str, _PlayerVotingHistory]  # Key = player name, Value = voting history
     robot_players: List[str]  # AI's knowledge of robot identities
-    human_players: List[str]  # AI's estimation of safe players
+    human_players: List[str]  
     last_vote_outcome: str  
-    textual_summary: str 
     current_phase: Optional[str] = None
+    textual_summary: str 

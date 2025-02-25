@@ -148,7 +148,7 @@ class SimpleFillinable(Fillinable):
         if rl.is_key_down(rl.KEY_BACKSPACE) and len(self.field_value) > 0:
             self.field_value = self.field_value[:-1]
             current_time = time.time()
-            if current_time - self.last_backspace_time > 0.1:  # 100ms delay
+            if current_time - self.last_backspace_time > 0.2:  # 200ms delay
                 self.field_value = self.field_value[:-1]
                 self.last_backspace_time = current_time 
 

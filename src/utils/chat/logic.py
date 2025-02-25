@@ -12,6 +12,7 @@ class AIPlayer:
         self.humans_introduced = 0
 
     def _generate_persona(self):
+        ...
         
 
     def new_message(self, message, directed_at_me=False, joke=False):

@@ -1,0 +1,45 @@
+Things to do for AIK12 Project
+
+GENERAL
+- Write the rules of the game. both in terms of the video game rules and the expectations of the kids in the game (AKA can they or can't they use their real names?)
+- Write the pre and post questions
+- Write the mock ups and software plan story board etc.
+
+SETUP_GAME.PY
+Rather than choose color, assign each player a color... maybe by when they join the client? <- I'm a fan of this. you log in you get x color x code name and a 16x16 picture that corresponds to it?
+- How do we ensure that players don't get the same color / picture / codename assignment. 
+- make sure that the construct_json method in PlayerInfoHandler is robust enough to handle 100 students
+- add first name last initial.
+
+TUTORIAL.PY
+- this doesn't exist but could be cool idk if it is necessary
+- type a message in the chat
+- vote for a player
+- point out different aspects of the screen
+
+GAME.PY
+- player_name should be dynamic. either auto assigned to players or taken from the json input
+- can we run on two different computers?
+- ChatWindow isn't working with websocket <- need to figure out why
+- dynamically save text conversations. maybe as a jsonl?
+	{timestamp: x, message: x, from:, x} something like this?
+- or just a big .txt file and figure out parsing later. 
+- have voting utility
+- have game log (voting history, game round, status of players eliminated)
+- It would be nice to have a scrollable chat window (using arrow keys maybe?)
+- Timer (both in game UI and functionality)
+
+UTILS/CHAT/CHAT.PY
+- Integrate system prompt into all other prompts
+- make sure that the update_system_prompt method works
+- make a verbose setting
+- think about how do we have verbose outputs save (so that the kids can see the prompts) while only the non-verbose messages get appended to chat?
+- Nothing here really works yet... so need to be fixed. 
+
+BIG THINGS
+1. CLIENT + 3 SERVER chat window in game
+2. FIX SET UP (make sure unique)
+3. Get the chat bot working
+4. Incorporate voting
+
+

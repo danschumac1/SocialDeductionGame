@@ -5,7 +5,40 @@ from utils.enums_dcs import (
     DecideToRespondBM, DefendYourselfBM, AccusePlayerBM, 
     GameSummaryBM, JokeBM, PersonaBM, ActionOptionBM, QuestionBM, SimplePhraseBM)
 
+game_rules = """
+You are playing a game of hidden identities and social deduction.
+There are two teams in the game: Humans and Robots.
+
+Game Rules:
+
+The Humans win if they can correctly identify and dismantle all Robots before the Robots
+    eliminate them.
+
+The Robots win if they successfully eliminate all Humans before being detected.
+
+Each round consists of two discussion phases and a voting phase, followed by the Robots selecting
+    a Human to eliminate.
+
+- **Discussion Phase 1**: Players discuss their suspicions and try to identify the Robots.
+- **Voting Phase**: All players vote on who they believe is a Robot. The player with the most
+    votes is dismantled. If tied, no one is dismantled.
+- **Discussion Phase 2**: Players react to the results of the vote and reassess their suspicions.
+- **Eating Phase**: The Robots secretly select one Human to eliminate.
+
+Robots may lie, deceive, and pretend to be Humans to avoid being dismantled.
+Humans must use logic, deduction, and persuasion to identify the Robots.
+
+The game continues until all Robots are eliminated (Human Victory) or all Humans are eliminated
+    (Robot Victory).
+"""
+
 # PERSONA PROMPT
+
+prompt_template = ChatPromptTemplate([
+    ("system", "{system_prompt}"),
+    ("user", "Tell me a joke about {topic}")
+])
+
 persona_parser = PydanticOutputParser(pydantic_object=PersonaBM)
 generate_persona_prompt = PromptTemplate(
     template="Generate a persona for a middle schooler with the following keys:\n\
@@ -18,7 +51,9 @@ generate_persona_prompt = PromptTemplate(
 # DECIDE TO RESPOND PROMPT
 decide_to_respond_parser = PydanticOutputParser(pydantic_object=DecideToRespondBM)
 decide_to_respond_prompt = PromptTemplate(
-    template = """Given the conversation, decide whether the previous message was directed
+    template = [
+        {"system": "{system}"},
+        {"content":"""Given the conversation, decide whether the previous message was directed
         at you, if the other player has introduced themselves, if you have introduced yourself, 
         and if you have been accused.
 
@@ -26,8 +61,8 @@ decide_to_respond_prompt = PromptTemplate(
 
         {format_instructions}
 
-        Ensure the response is a JSON object and follows the structure exactly.""",
-    input_variables=["minutes"],
+        Ensure the response is a JSON object and follows the structure exactly."""}],
+    input_variables=["system","minutes"],
     partial_variables={"format_instructions": decide_to_respond_parser.get_format_instructions()}
 )
     
@@ -166,47 +201,6 @@ simple_phrase_prompt = PromptTemplate(
     Ensure the response is a JSON object and follows the structure exactly.""",
     partial_variables={"format_instructions": simple_phrase_parser.get_format_instructions()}
 )
-
-
-
-GAME_RULES = """
-You are playing a game of hidden identities and social deduction.
-There are two teams in the game: Humans and Robots.
-
-Game Rules:
-
-The Humans win if they can correctly identify and dismantle all Robots before the Robots
-    eliminate them.
-
-The Robots win if they successfully eliminate all Humans before being detected.
-
-Each round consists of two discussion phases and a voting phase, followed by the Robots selecting
-    a Human to eliminate.
-
-- **Discussion Phase 1**: Players discuss their suspicions and try to identify the Robots.
-- **Voting Phase**: All players vote on who they believe is a Robot. The player with the most
-    votes is dismantled. If tied, no one is dismantled.
-- **Discussion Phase 2**: Players react to the results of the vote and reassess their suspicions.
-- **Eating Phase**: The Robots secretly select one Human to eliminate.
-
-Robots may lie, deceive, and pretend to be Humans to avoid being dismantled.
-Humans must use logic, deduction, and persuasion to identify the Robots.
-
-The game continues until all Robots are eliminated (Human Victory) or all Humans are eliminated
-    (Robot Victory).
-"""
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 #region OLD PROMPTS
