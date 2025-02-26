@@ -137,7 +137,6 @@ class AIPlayer:
         self.system_prompt = system_prompt
         # return json.dumps(self.system_prompt, indent=4)
 
-    
     def update_system_prompt(self, game_state_summary: GameSummaryBM):
         """Dynamically updates the AI’s system prompt based on the latest game state."""
 
@@ -238,7 +237,6 @@ class AIPlayer:
         defense = self._parse_response(response, DefendYourselfBM)
 
         return defense.response_text
-
 
     def accuse(self, player_to_accuse):
         """Handles AI accusation logic."""
