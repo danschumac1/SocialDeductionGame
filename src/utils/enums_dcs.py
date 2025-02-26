@@ -14,10 +14,12 @@ class Team(Enum):
 
 class PersonaBM(BaseModel):
     name: str
+    code_name: str
     hobby: str
     food: str
     anythingelse: str
-    color: Tuple[int, int, int]
+    # raylib color
+    color: Tuple[int, int, int, int] = Field(..., description="Raylib color in (R, G, B, A) format")
 
 class DecideToRespondBM(BaseModel):
     directed_at_me: Optional[bool] = None

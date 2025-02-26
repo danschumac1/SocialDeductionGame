@@ -7,26 +7,28 @@ from langchain_core.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
+# import raylibpy as rl
 import os
 from dotenv import load_dotenv
-from typing import Union
+from typing import Tuple, Union
 
-import sys
-sys.path.append("./src")
 from utils.enums_dcs import (Team, ActionOptionBM, DecideToRespondBM, DefendYourselfBM, 
     AccusePlayerBM, GameSummaryBM, PersonaBM)
-from prompts import (
+from utils.chat.prompts import (
     chose_action_prompt, decide_to_respond_prompt, defend_yourself_prompt, accuse_player_prompt,
     generate_persona_prompt, game_summary_prompt, game_rules
 )
 
 class AIPlayer:
     def __init__(
-            self, team: Team = Team.ROBOT, is_persona_stealer: bool = False, 
-            persona: Union[None, str] = None):
+            self, code_name:str, color:Tuple[int,int,int,int] ,persona_to_steal: Union[None, PersonaBM], 
+            is_persona_stealer: bool = True, 
+            ):
         """Initializes AI player with a generated or stolen persona."""
 
         # Load LLM and LangChain setup
+        self.code_name = code_name
+        self.color = color
         self.client = self._load_env()
         self.llm = ChatOpenAI(temperature=0.7, model="gpt-4o-mini")
         self.memory = ConversationBufferMemory(return_messages=True)
@@ -38,10 +40,9 @@ class AIPlayer:
         self.accuse_chain = accuse_player_prompt | self.llm
         self.summarize_chain = game_summary_prompt | self.llm
 
-        self.persona = self._steal_persona(persona) if \
+        self.persona = self._steal_persona(persona_to_steal) if \
             is_persona_stealer else self._generate_persona()
-        self.code_name = "Susan" # TODO FIX
-        self.team = team
+        self.team = Team.ROBOT
         self.is_persona_stealer = is_persona_stealer
         self.voting_history = []
         self.has_introduced = False
@@ -84,8 +85,14 @@ class AIPlayer:
         response = self.generate_persona_chain.invoke({})
         #  Ensure we extract text correctly from `AIMessage`
         return self._parse_response(response, PersonaBM)  #  Use `.content` instead of `["text"]`
+    
+    def _steal_persona(self, persona:PersonaBM):
+        """Steals a persona from a human player."""
+        persona.color = self.color  #  Use AI's color
+        persona.code_name = self.code_name  #  Use AI's code name
+        return persona
         
-    def initialize_system_prompt(self, player_names: list, other_robot_name: str):
+    def initialize_system_prompt(self, human_code_names: list, ai_code_names: str):
         """Initializes the system prompt for the AI with game rules, persona, and initial game state."""
 
         # Load base game rules
@@ -103,8 +110,8 @@ class AIPlayer:
         game_state_str = (
             "You are a Robot player in a hidden identity game. "
             "Your goal is to avoid detection and help your team win. "
-            f"The other Robot player is {other_robot_name}. "
-            "All other players are Humans. "
+            f"The Robot players are {ai_code_names}. "
+            f"The human players are {human_code_names} "
             "You must keep your identity as a Robot secret. "
             "The game is in its early stages."
             )
@@ -116,9 +123,9 @@ class AIPlayer:
             "game_state": {
                 "role": "Robot",
                 "team": "Robots",
-                "other_robot": other_robot_name,
+                "other_robot_code_names": ai_code_names,
                 "current_phase": "Game Start",
-                "players_alive": player_names,
+                "players_alive": human_code_names + ai_code_names,
                 "players_killed": [],
                 "players_voted_off": [],
                 "voting_history": {},
@@ -158,16 +165,6 @@ class AIPlayer:
         self.system_prompt["game_state"]["summary"] = game_state_summary.textual_summary
 
         return json.dumps(self.system_prompt, indent=4)
-
-
-    def _steal_persona(self, persona):
-        """Steals a persona from a human player."""
-        return {
-            "name": persona["code_name"],
-            "hobby": persona["hobby"],
-            "food": persona["food"],
-            "anythingelse": persona["anythingelse"]
-        }
 
     def decide_to_respond(self, message):
         """Determines whether AI should respond and what action to take."""
@@ -259,15 +256,3 @@ class AIPlayer:
     def update_game_state(self):
         """Updates AI's internal memory based on game events."""
         pass
-
-# Testing AIPlayer
-if __name__ == "__main__":
-    print("\n Running AIPlayer Full Game Simulation...\n")
-    player_names = ["Alice", "Bob", "Charlie", "David", "Eve"]
-    other_robot_name = "Alice"
-    #  Initialize AI Player
-    ai_player = AIPlayer()
-    ai_player.initialize_system_prompt(player_names, other_robot_name)
-    print(ai_player.system_prompt)
-
-    

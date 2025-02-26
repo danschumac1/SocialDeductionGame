@@ -41,5 +41,3 @@ BIG THINGS
 2. FIX SET UP (make sure unique)
 3. Get the chat bot working
 4. Incorporate voting
-
-
