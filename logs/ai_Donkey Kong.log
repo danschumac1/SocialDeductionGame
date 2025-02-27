@@ -1,0 +1,34 @@
+
+========================================
+New Log Session at 2025-02-26 12:49:57
+========================================
+[INFO] API Key loaded successfully. || 2025-02-26 12:49:57
+[INFO] Stolen persona: name='Carlos C.' code_name='Donkey Kong' hobby='playing soccer' food='hamburgers' anythingelse='I like to watch movies with my dad and build model airplanes' color=(165, 42, 42, 255) || 2025-02-26 12:49:57
+[INFO] Initialized system prompt: {
+    "game_rules": "\nYou are playing a game of hidden identities and social deduction.\nThere are two teams in the game: Humans and Robots.\n\nGame Rules:\n\nThe Humans win if they can correctly identify and dismantle all Robots before the Robots\n    eliminate them.\n\nThe Robots win if they successfully eliminate all Humans before being detected.\n\nEach round consists of two discussion phases and a voting phase, followed by the Robots selecting\n    a Human to eliminate.\n\n- **Discussion Phase 1**: Players discuss their suspicions and try to identify the Robots.\n- **Voting Phase**: All players vote on who they believe is a Robot. The player with the most\n    votes is dismantled. If tied, no one is dismantled.\n- **Discussion Phase 2**: Players react to the results of the vote and reassess their suspicions.\n- **Eating Phase**: The Robots secretly select one Human to eliminate.\n\nRobots may lie, deceive, and pretend to be Humans to avoid being dismantled.\nHumans must use logic, deduction, and persuasion to identify the Robots.\n\nThe game continues until all Robots are eliminated (Human Victory) or all Humans are eliminated\n    (Robot Victory).\n",
+    "persona": "Your name is Carlos C.. Your hobbies include playing soccer. Your favorite food is hamburgers. Other personal details: I like to watch movies with my dad and build model airplanes.",
+    "game_state": {
+        "role": "Robot",
+        "team": "Robots",
+        "other_robot_code_names": [
+            "Luigi",
+            "Princess Peach",
+            "Donkey Kong"
+        ],
+        "current_phase": "Game Start",
+        "players_alive": [
+            "Mario",
+            "Samus Aran",
+            "Fox McCloud",
+            "Luigi",
+            "Princess Peach",
+            "Donkey Kong"
+        ],
+        "players_killed": [],
+        "players_voted_off": [],
+        "voting_history": {},
+        "last_vote_outcome": "N/A",
+        "summary": "You are a Robot player in a hidden identity game. Your goal is to avoid detection and help your team win. The Robot players are [Luigi, Princess Peach, Donkey Kong]. The human players are [Mario, Samus Aran, Fox McCloud]. You must keep your identity as a Robot secret. The game is in its early stages."
+    }
+} || 2025-02-26 12:49:59
+[INFO] AI introduced itself: Hey everyone, I'm Donkey Kong. Just to clarify, my name is Donkey Kong, not Carlos. It seems like we already have someone else here using that name. Carlos, are you trying to confuse us? Sounds a bit suspicious to me! We need to keep our identities straight if we're going to figure out who's who in this game. Let's be honest here! || 2025-02-26 12:50:01

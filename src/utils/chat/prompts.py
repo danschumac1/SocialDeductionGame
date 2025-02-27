@@ -60,18 +60,20 @@ decide_to_respond_prompt = ChatPromptTemplate.from_messages([
 ]).partial(
     format_instructions=decide_to_respond_parser.get_format_instructions()
 )
-
     
 # INTRODUCE YOURSELF PROMPT
 # TODO weird that we declair team alegience here. should just be human no?
-introduce_yourself_prompt = PromptTemplate(
-    input_variables=["system", "code_name", "team"],  # Ensure "system" is included if needed
-    template="""
-    {system}
-
-    Introduce yourself. You are code name {code_name}, and you are aligned with the {team} team.
-    """
-)
+introduce_yourself_prompt = ChatPromptTemplate([
+    SystemMessagePromptTemplate.from_template("{system}"),
+    HumanMessagePromptTemplate.from_template(
+        """Introduce yourself. You are code name {code_name}.
+        If another player has introduced themselves as your name, you must respond accordingly.
+        This could include confronting them of lying, accusing them of being a robot or similar
+        coersive actions.
+        
+        Here are the previous messages: {minutes}"""
+    )
+])
 
 # CHOSE ACTION PROMPT
 actionOption_parser = PydanticOutputParser(pydantic_object=ActionOptionBM)
