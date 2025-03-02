@@ -1,0 +1,19 @@
+consol ready version good.
+
+server <- run the AI?
+
+Chat
+    - colored text per player
+    - the ability to send messages from 3 computers to eachother. holding ^ colors
+    - code_name: "I am not a robot"
+Need to be able to get messages from server 
+    2 ais 
+    2 other clients
+
+client
+client 
+client
+
+
+Voting system.
+    Kicked off players can't play (can observe)

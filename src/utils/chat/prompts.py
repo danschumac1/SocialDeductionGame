@@ -7,40 +7,26 @@ from langchain.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, H
 from langchain.output_parsers import PydanticOutputParser
 
 game_rules = """
-You are playing a game of hidden identities and social deduction.
-There are two teams in the game: Humans and Robots.
+GAME RULES:
 
-Game Rules:
+There are 6 players: 3 humans and 3 AI imposters. Each AI is pretending to be one human player.
 
-The Humans win if they can correctly identify and dismantle all Robots before the Robots
-    eliminate them.
+GOAL:
+- Humans win if they vote out all 3 AI imposters after 3 rounds.
+- If 1 AI survives after 3 rounds, it’s a partial win for the AIs.
+- If 2 AIs survive after 3 rounds, the AIs win completely.
 
-The Robots win if they successfully eliminate all Humans before being detected.
+GAME PHASES:
+1. **Info Phase**: All players (humans and AIs) fill out personal info.
+2. **Intro Phase**: Players introduce themselves and learn that each human has an AI copy.
+3. **Vote Phase**: Players vote to remove 1 player. AI players do not vote. Votes are secret, and \
+    players don’t know if the removed player was human or AI.
+4. **Discuss Phase**: The removed player is revealed. Players talk about the vote, share \
+    suspicions, and try to spot the AIs.
 
-Each round consists of two discussion phases and a voting phase, followed by the Robots selecting
-    a Human to eliminate.
-
-- **Discussion Phase 1**: Players discuss their suspicions and try to identify the Robots.
-- **Voting Phase**: All players vote on who they believe is a Robot. The player with the most
-    votes is dismantled. If tied, no one is dismantled.
-- **Discussion Phase 2**: Players react to the results of the vote and reassess their suspicions.
-- **Eating Phase**: The Robots secretly select one Human to eliminate.
-
-Robots may lie, deceive, and pretend to be Humans to avoid being dismantled.
-Humans must use logic, deduction, and persuasion to identify the Robots.
-
-The game continues until all Robots are eliminated (Human Victory) or all Humans are eliminated
-    (Robot Victory).
+Phases 3 and 4 repeat for 3 rounds. After that, all identities are revealed and the final result \
+    (win, partial win, or loss) is shown.
 """
-
-persona_parser = PydanticOutputParser(pydantic_object=PersonaBM)
-generate_persona_prompt = PromptTemplate(
-    template="Generate a persona for a middle schooler with the following keys:\n\
-              {format_instructions}\n\
-              Ensure the response is a JSON object and follows the structure exactly.",
-    input_variables=[],  
-    partial_variables={"format_instructions": persona_parser.get_format_instructions()}
-)
 
 # DECIDE TO RESPOND PROMPT
 decide_to_respond_parser = PydanticOutputParser(pydantic_object=DecideToRespondBM)
@@ -53,9 +39,13 @@ decide_to_respond_prompt = ChatPromptTemplate.from_messages([
 
         CONVERSATION: {minutes}
 
+        Do not include emojis in your response.
         {format_instructions}
 
-        Ensure the response is a JSON object and follows the structure exactly."""
+        Ensure the response is a JSON object and follows the structure exactly.
+        
+        GAME STATE: 
+        {game_state}"""
     )
 ]).partial(
     format_instructions=decide_to_respond_parser.get_format_instructions()
@@ -71,7 +61,11 @@ introduce_yourself_prompt = ChatPromptTemplate([
         This could include confronting them of lying, accusing them of being a robot or similar
         coersive actions.
         
-        Here are the previous messages: {minutes}"""
+        Here are the previous messages: {minutes}
+        
+        Do not include emojis in your response.
+
+        GAME STATE: {game_state}"""
     )
 ])
 
@@ -83,9 +77,12 @@ chose_action_prompt = ChatPromptTemplate.from_messages([
         """Given the current game context, select ONLY ONE action and respond accordingly.
         You must return a JSON object with exactly one of these keys filled:
         
+        Do not include emojis in your response.
         {format_instructions}
         
-        Ensure the response follows this rule strictly."""
+        Ensure the response follows this rule strictly.
+        
+        GAME STATE: {game_state}"""
     )
 ]).partial(
     format_instructions=actionOption_parser.get_format_instructions()
@@ -104,9 +101,12 @@ game_summary_prompt = ChatPromptTemplate.from_messages([
         PREVIOUS SUMMARY: {previous_summary}
         MINUTES: {minutes}
 
+        Do not include emojis in your response.
         {format_instructions}
 
-        Ensure the response is a JSON object and follows the structure exactly."""
+        Ensure the response is a JSON object and follows the structure exactly.
+        
+        GAME STATE: {game_state}"""
     )
 ]).partial(
     format_instructions=gameSummary_parser.get_format_instructions()
@@ -117,8 +117,8 @@ defend_yourself_parser = PydanticOutputParser(pydantic_object=DefendYourselfBM)
 defend_yourself_prompt = ChatPromptTemplate.from_messages([
     SystemMessagePromptTemplate.from_template("{system}"),
     HumanMessagePromptTemplate.from_template(
-        """You have been accused by {accuser}. Here is their accusation:
-        "{accusation}"
+        """You have been accused by something by another player. You must determine who accused you,
+        what they accused you of, and how you will defend yourself.
 
         Given the game state and the previous discussion, select ONLY ONE of the following defense strategies:
         - **Accuse**: Redirect suspicion to another player.
@@ -127,11 +127,14 @@ defend_yourself_prompt = ChatPromptTemplate.from_messages([
         - **Counter Evidence**: Use voting history or logic to counter the claim.
         - **Seek Alliance**: Convince a neutral player to back you up.
 
-        PREVIOUS DISCUSSION: {current_dialogue}
+        PREVIOUS DISCUSSION: {minutes}
 
+        Do not include emojis in your respo
         {format_instructions}
 
-        Ensure the response is a JSON object and follows the structure exactly."""
+        Ensure the response is a JSON object and follows the structure exactly.
+        
+        GAME STATE: {game_state}"""
     )
 ]).partial(
     format_instructions=defend_yourself_parser.get_format_instructions()
@@ -145,15 +148,15 @@ accuse_player_prompt = ChatPromptTemplate.from_messages([
         """You are playing a social deduction game where humans are trying to identify robots.
         Based on the current game state, you need to **accuse a player** whom you suspect to be a robot.
 
-        PREVIOUS DISCUSSION: {current_dialogue}
-        GAME STATE SUMMARY: {game_state_summary}
-        PREVIOUS VOTES: {previous_votes}
+        PREVIOUS DISCUSSION: {minutes}
 
         Your accusation should be **logical and convincing**, considering past votes, inconsistencies, or behavioral clues.
 
+        Do not include emojis in your response.
         {format_instructions}
 
-        Ensure the response is a JSON object and follows the structure exactly."""
+        Ensure the response is a JSON object and follows the structure exactly.
+        GAME STATE SUMMARY: {game_state}"""
     )
 ]).partial(
     format_instructions=accuse_player_parser.get_format_instructions()
@@ -169,11 +172,14 @@ joke_prompt = ChatPromptTemplate.from_messages([
         Your joke should be lighthearted and fit naturally into the conversation 
         Avoid focrced human. For example do not tell random knock knock jokes.
 
-        CONTEXT: {context}
+        PREVIOUS DISCUSSION: {minutes}
 
+        Do not include emojis in your response.
         {format_instructions}
 
-        Ensure the response is a JSON object and follows the structure exactly."""
+        Ensure the response is a JSON object and follows the structure exactly.
+        
+        GAME STATE: {game_state}"""
     )]
     ).partial(
     format_instructions=joke_parser.get_format_instructions()
@@ -191,11 +197,14 @@ question_prompt = ChatPromptTemplate.from_messages([
         - Appear human
 
         GAME STATE: {game_state}
-        PREVIOUS DISCUSSION: {current_dialogue}
+        PREVIOUS DISCUSSION: {minutes}
 
+        Do not include emojis in your response.
         {format_instructions}
 
-        Ensure the response is a JSON object and follows the structure exactly."""
+        Ensure the response is a JSON object and follows the structure exactly.
+        
+        GAME STATE: {game_state}"""
     )
 ]).partial(
     format_instructions=question_parser.get_format_instructions()
@@ -210,56 +219,20 @@ simple_phrase_prompt = ChatPromptTemplate.from_messages([
 
         Your response should be natural and appropriate for the moment.
 
-        CONTEXT: {conversation_context}
+        CONTEXT: {minutes}
 
         Choose from responses like:
         - Agreement ("I agree")
         - Disagreement ("I disagree")
         - Reaction ("lol", "haha")
 
+        Do not include emojis in your response.
         {format_instructions}
 
-        Ensure the response is a JSON object and follows the structure exactly."""
+        Ensure the response is a JSON object and follows the structure exactly.
+        
+        GAME STATE: {game_state}"""
     )
 ]).partial(
     format_instructions=simple_phrase_parser.get_format_instructions()
 )
-
-#region OLD PROMPTS
-####################################################################################################
-SELF_IDENTITY = """
-You are code name {code_name}, and you are aligned with the {team}. You must maintain your \
-    identity and play according to your team’s objectives.
-"""
-
-OTHERS_IDENTITY = """
-The following players are Robots: {robot_players}. The following players are confirmed \
-    Humans: {human_players}. Use this knowledge strategically.
-"""
-
-DISCUSSION_PHASE_1 = """
-The round begins. Players must discuss who they believe is a Robot. Consider past actions, suspicious behavior, and logical reasoning.
-"""
-
-VOTING_PHASE = """
-The discussion phase is over. Players must now vote on who they believe is a Robot. The player with the most votes is dismantled. If tied, no one is dismantled.
-"""
-
-DISCUSSION_PHASE_2 = """
-The results of the vote are revealed. Players must reassess their suspicions and discuss their next moves.
-"""
-
-EATING_PHASE = """
-The discussion phase is over. Players are asleep. The Robots must now secretly select one Human to eliminate.
-"""
-
-HUMAN_VICTORY = """
-The Humans have successfully identified and dismantled all Robots. The Humans win!
-"""
-
-ROBOT_VICTORY = """
-The Robots have successfully eliminated all Humans. The Robots win!
-"""
-
-#endregion
-####################################################################################################

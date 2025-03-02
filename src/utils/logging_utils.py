@@ -33,7 +33,7 @@ class StandAloneLogger:
     def _write_to_log(self, log_entry: str):
         """Writes a log entry to the log file."""
         try:
-            with open(self.log_path, "a") as f:
+            with open(self.log_path, "a", encoding="utf-8") as f:
                 f.write(log_entry)
                 f.flush()
         except IOError as e:
@@ -101,7 +101,7 @@ class MasterLogger:
     def _write_to_log(self, log_entry: str):
         """Writes a log entry to the log file."""
         try:
-            with open(self.log_path, "a") as f:
+            with open(self.log_path, "a", encoding="utf-8") as f:
                 f.write(log_entry)
                 f.flush()
         except IOError as e:

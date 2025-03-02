@@ -43,7 +43,7 @@ class ActionOptionBM(BaseModel):
         if v is not None:
             filled_fields = [key for key, value in info.data.items() if value is not None]
             if len(filled_fields) > 1:
-                raise ValueError(f"❌ Only one response can be provided at a time. Found: {filled_fields}")
+                raise ValueError(f"Only one response can be provided at a time. Found: {filled_fields}")
         return v
 
     
@@ -59,14 +59,14 @@ class _DefenseChoices(BaseModel):
         choices = [self.accuse, self.deescalate, self.be_dismissive, self.counter_evidence, self.seek_alliance]
         non_none_choices = [choice for choice in choices if choice is not None]
         if len(non_none_choices) != 1:
-            raise ValueError(f"❌ Only ONE defense choice can be selected. Given: {non_none_choices}")
+            raise ValueError(f"Only ONE defense choice can be selected. Given: {non_none_choices}")
 
 class DefendYourselfBM(BaseModel):
     accuser: str
     accusation: str
     defense_choice: _DefenseChoices
     reasoning: str
-    response_text: str # The AI's output for the chat
+    accusation_text: str # The AI's output for the chat
 
     def validate_defense(self):
         """Ensures the defense_choice is valid."""
@@ -75,35 +75,37 @@ class DefendYourselfBM(BaseModel):
 class AccusePlayerBM(BaseModel):
     player_to_accuse: str  # The player being accused
     reasoning: str  # The AI's reasoning for the accusation
-    response_text: str  # The AI's output for the chat
+    accusation_text: str  # The AI's output for the chat
     previous_votes: Optional[List[str]]  # List of players this player has voted for
-
-# Base Model for Jokes
-class JokeBM(BaseModel):
-    joke_text: str  # The joke AI wants to tell
-
-# Base Model for Asking a Question
-class QuestionBM(BaseModel):
-    question_text: str  # The question AI asks
-    context: Optional[str] = None  # Optional context for why the AI is asking
 
 # Base Model for Simple Phrases (e.g., "I agree", "lol")
 class SimplePhraseBM(BaseModel):
     phrase: str  # The short response AI gives
 
-class _PlayerVotingHistory(BaseModel):
-    player_name: str
-    votes_cast: List[str]  # List of player names this player has voted for
-    times_accused: int  # How many times this player has been accused
-
 class GameSummaryBM(BaseModel):
     round_number: int
-    players_alive: List[str] # List of players still in the game
-    players_killed: List[str] # List of eliminated players (who & when)
-    players_voted_off: List[str]  # List of players voted off 
-    voting_history: Dict[str, _PlayerVotingHistory]  # Key = player name, Value = voting history
-    robot_players: List[str]  # AI's knowledge of robot identities
+    players_alive: List[str]        # List of players still in the game
+    players_voted_off: List[str]    # List of players voted off 
+    robot_players: List[str]        # AI's knowledge of robot identities
     human_players: List[str]  
     last_vote_outcome: str  
-    current_phase: Optional[str] = None
     textual_summary: str 
+
+class JokeBM(BaseModel):
+    joke_text: str
+    reasoning: str  # Why did the AI pick this joke? What does it hope to achieve?
+    joke_target: Optional[str] = None  # Is this aimed at a player, game event, or topic?
+    joke_tone: Optional[str] = "lighthearted"  # Could be: lighthearted, awkward, self-deprecating, etc.
+
+class QuestionBM(BaseModel):
+    question_text: str
+    context: Optional[str] = None  # Existing context is still useful
+    intent: str  # What does the AI want to achieve with this question?
+    target_player: Optional[str] = None  # Who is the question aimed at, if anyone?
+    strategy_type: Optional[str] = "information"  # Could be: information, pressure, humor
+
+class SimplePhraseBM(BaseModel):
+    phrase: str  # The short response AI gives
+    intent: str  # Why is the AI choosing this phrase? (e.g., "show agreement", "lighten mood", "deflect suspicion")
+    emotion: Optional[str] = None  # Optional: what emotion does this phrase convey? (e.g., "happy", "nervous", "annoyed")
+    target_player: Optional[str] = None  # If the phrase is responding to someone directly, who?
