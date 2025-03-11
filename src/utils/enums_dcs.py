@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Dict, List, Optional, Tuple
+from typing import List, Optional, Tuple
 from pydantic import BaseModel, Field, field_validator
 
 class GameState(Enum):
@@ -22,19 +22,21 @@ class PersonaBM(BaseModel):
     color: Tuple[int, int, int, int] = Field(..., description="Raylib color in (R, G, B, A) format")
 
 class DecideToRespondBM(BaseModel):
-    directed_at_me: Optional[bool] = None
-    introduced_self: Optional[bool] = None
-    introducing_done: Optional[bool] = None
-    accused: Optional[bool] = None
+    directed_at_me: Optional[bool] = False
+    havent_indroduced_self: Optional[bool] = False
+    accused: Optional[bool] = False
+    havent_answered_latest_icebreaker: Optional[bool] = False
+    speak_up: Optional[bool] = False
+    reasoning: str # Explanation for why this action was chosen
 
 class ActionOptionBM(BaseModel):
-    introduce: Optional[str] = None
-    defend: Optional[str] = None
-    accuse: Optional[str] = None
-    joke: Optional[str] = None
-    question: Optional[str] = None
-    simple_phrase: Optional[str] = None
-    context: Optional[str] = None  # Explanation for why this action was chosen
+    introduce: Optional[bool] = None
+    defend: Optional[bool] = None
+    accuse: Optional[bool] = None
+    joke: Optional[bool] = None
+    question: Optional[bool] = None
+    simple_phrase: Optional[bool] = None
+    reasoning: str = None  # Explanation for why this action was chosen
 
     @field_validator("introduce", "defend", "accuse", "joke", "question", "simple_phrase", mode="before")
     @classmethod
@@ -45,8 +47,7 @@ class ActionOptionBM(BaseModel):
             if len(filled_fields) > 1:
                 raise ValueError(f"Only one response can be provided at a time. Found: {filled_fields}")
         return v
-
-    
+        
 class _DefenseChoices(BaseModel):
     accuse: Optional[str] = None  # Redirect suspicion to another player
     deescalate: Optional[str] = None  # Reduce tension and shift focus
@@ -76,7 +77,6 @@ class AccusePlayerBM(BaseModel):
     player_to_accuse: str  # The player being accused
     reasoning: str  # The AI's reasoning for the accusation
     accusation_text: str  # The AI's output for the chat
-    previous_votes: Optional[List[str]]  # List of players this player has voted for
 
 # Base Model for Simple Phrases (e.g., "I agree", "lol")
 class SimplePhraseBM(BaseModel):
@@ -85,11 +85,9 @@ class SimplePhraseBM(BaseModel):
 class GameSummaryBM(BaseModel):
     round_number: int
     players_alive: List[str]        # List of players still in the game
-    players_voted_off: List[str]    # List of players voted off 
-    robot_players: List[str]        # AI's knowledge of robot identities
-    human_players: List[str]  
+    players_voted_off: List[str]    # List of players voted off
     last_vote_outcome: str  
-    textual_summary: str 
+    textual_summary: str  # A human-readable summary of the game's progression
 
 class JokeBM(BaseModel):
     joke_text: str
@@ -103,9 +101,3 @@ class QuestionBM(BaseModel):
     intent: str  # What does the AI want to achieve with this question?
     target_player: Optional[str] = None  # Who is the question aimed at, if anyone?
     strategy_type: Optional[str] = "information"  # Could be: information, pressure, humor
-
-class SimplePhraseBM(BaseModel):
-    phrase: str  # The short response AI gives
-    intent: str  # Why is the AI choosing this phrase? (e.g., "show agreement", "lighten mood", "deflect suspicion")
-    emotion: Optional[str] = None  # Optional: what emotion does this phrase convey? (e.g., "happy", "nervous", "annoyed")
-    target_player: Optional[str] = None  # If the phrase is responding to someone directly, who?

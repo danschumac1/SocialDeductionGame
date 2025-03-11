@@ -1,102 +1,127 @@
-'''
-python ./src/utils/chat/chat.py
-'''
-
 import json
-from langchain_core.prompts import PromptTemplate
-from langchain.chains import LLMChain
-from langchain_openai import ChatOpenAI
-from langchain.memory import ConversationBufferMemory
-# import raylibpy as rl
-import os
-from dotenv import load_dotenv
 from typing import List, Tuple, Union
-
-from utils.enums_dcs import (JokeBM, QuestionBM, SimplePhraseBM, Team, ActionOptionBM, DecideToRespondBM, DefendYourselfBM, 
-    AccusePlayerBM, GameSummaryBM, PersonaBM)
-from utils.chat.prompts import (
-    chose_action_prompt, decide_to_respond_prompt, defend_yourself_prompt, accuse_player_prompt,
-    game_summary_prompt, game_rules, introduce_yourself_prompt, question_prompt, joke_prompt,
-    simple_phrase_prompt
-)
+from utils.chat.prompter import OpenAIPrompter
 from utils.logging_utils import StandAloneLogger
+from utils.chat.examples import (
+    GENERIC_PROMPT_HEADERS,
+    CHOOSE_ACTION_MAIN_HEADER, CHOSE_ACTION_EXAMPLES, 
+    DEFEND_MAIN_HEADER, DEFEND_EXAMPLES,
+    ACCUSE_MAIN_HEADER, ACCUSE_EXAMPLES, 
+    DTR_EXAMPLES, DTR_MAIN_HEADER,
+    GSU_HEADERS,
+    JOKE_MAIN_HEADER, JOKE_EXAMPLES,
+    QUESTION_MAIN_HEADER, QUESTION_EXAMPLES,
+    SIMPLE_PHRASE_MAIN_HEADER, SIMPLE_PHRASE_EXAMPLES,
+    GSU_MAIN_HEADER, GSU_EXAMPLES
+)
+from utils.enums_dcs import (
+    JokeBM, QuestionBM, SimplePhraseBM, Team, ActionOptionBM, DecideToRespondBM, 
+    DefendYourselfBM, AccusePlayerBM, GameSummaryBM, PersonaBM
+)
 
 class AIPlayer:
     def __init__(
-            self, code_name:str, color:Tuple[int,int,int,int] ,persona_to_steal: Union[None, PersonaBM] 
-            ):
+            self, code_name: str, color: Tuple[int, int, int, int], 
+            persona_to_steal: Union[None, PersonaBM]):
         """Initializes AI player with a generated or stolen persona."""
-
-        # Load LLM and LangChain setup
         self.code_name = code_name
         self.color = color
         self.logger = StandAloneLogger(
-            log_path=f"./logs/ai_{self.code_name}.log", 
-            clear=True, 
-            init = True
+            log_path=f"./logs/ai_{self.code_name}.log",
+            clear=True,
+            init=True
         )
-        self.client = self._load_env()
-        self.llm = ChatOpenAI(temperature=0.7, model="gpt-4o-mini")
-        self.memory = ConversationBufferMemory(return_messages=True)
-        self.system_prompt = None
         self.prompt_tail = None
-        
-        # Chains
-        self.chose_action_chain = chose_action_prompt | self.llm
-        self.introduce_chain = introduce_yourself_prompt | self.llm
-        self.decide_to_respond_chain = decide_to_respond_prompt | self.llm
-        self.defend_chain = defend_yourself_prompt | self.llm
-        self.accuse_chain = accuse_player_prompt | self.llm
-        self.joke_chain = joke_prompt | self.llm
-        self.question_chain = question_prompt | self.llm
-        self.simple_phrase_chain = simple_phrase_prompt | self.llm
-        self.summarize_chain = game_summary_prompt | self.llm
 
+        # AI Persona
         self.persona = self._steal_persona(persona_to_steal)
-        self.team = Team.ROBOT
+        self.system_prompt = (
+            "You are a middle schooler playing a social deduction game with your friends. " 
+            "You are a human trying to figure out who the robots are. " 
+            "You must convince the other players that you are human while "
+            "trying to identify the robots. "
+            "Your persona is: " + self.persona.model_dump_json()
+        )
+        self.team = Team.HUMAN
         self.voting_history = []
         self.has_introduced = False
         self.is_accused = False
         self.is_questioned = False
         self.humans_introduced = 0
-        
-    def _load_env(self):
-        """Loads OpenAI API key from .env"""
-        load_dotenv("./resources/.env")
-        api_key = os.getenv("OPENAI_API_KEY")
-        if not api_key:
-            raise ValueError("API Key not found.")
-        self.logger.info("API Key loaded successfully.")
-        return api_key
-    
-    def _parse_response(self, response, model_class):
-        """
-        Extracts text from an AIMessage response, removes Markdown artifacts, 
-        parses JSON, and validates it using the provided Pydantic model.
-        
-        :param response: AIMessage response from LangChain
-        :param model_class: Pydantic model class to validate the parsed JSON
-        :return: Parsed and validated Pydantic model instance
-        """
-        if hasattr(response, "content"):  
-            response_text = response.content  #  Extracts text properly
-        else:
-            raise TypeError(f" Unexpected response type: {type(response)} - {response}")
 
-        try:
-            #  Clean Markdown formatting & parse JSON
-            parsed_data = json.loads(response_text.strip("```json").strip("```").strip())
-            return model_class.model_validate(parsed_data)
-        except json.JSONDecodeError:
-            self.logger.error(f"Failed to parse LangChain response as JSON: {response_text}")
-            raise ValueError(f" Failed to parse LangChain response as JSON: {response_text}")
-    
+        # Initialize custom prompter_dict
+        self.prompter_dict = {
+            "choose_action": OpenAIPrompter(
+                openai_dict_key="OPENAI_API_KEY",
+                system_prompt=self.system_prompt,
+                examples=CHOSE_ACTION_EXAMPLES,
+                prompt_headers=GENERIC_PROMPT_HEADERS,
+                output_format=ActionOptionBM,
+                main_prompt_header=CHOOSE_ACTION_MAIN_HEADER
+            ),
+            "defend": OpenAIPrompter(
+                openai_dict_key="OPENAI_API_KEY",
+                system_prompt=self.system_prompt,
+                examples=DEFEND_EXAMPLES,
+                prompt_headers=GENERIC_PROMPT_HEADERS,
+                output_format=DefendYourselfBM,
+                main_prompt_header=DEFEND_MAIN_HEADER
+            ),
+            "accuse": OpenAIPrompter(
+                openai_dict_key="OPENAI_API_KEY",
+                system_prompt=self.system_prompt,
+                examples=ACCUSE_EXAMPLES,
+                prompt_headers=GENERIC_PROMPT_HEADERS,
+                output_format=AccusePlayerBM,
+                main_prompt_header=ACCUSE_MAIN_HEADER
+            ),
+            "joke": OpenAIPrompter(
+                openai_dict_key="OPENAI_API_KEY",
+                system_prompt=self.system_prompt,
+                examples=JOKE_EXAMPLES,
+                prompt_headers=GENERIC_PROMPT_HEADERS,
+                output_format=JokeBM,
+                main_prompt_header=JOKE_MAIN_HEADER
+            ),
+            "question": OpenAIPrompter(
+                openai_dict_key="OPENAI_API_KEY",
+                system_prompt=self.system_prompt,
+                examples=QUESTION_EXAMPLES,
+                prompt_headers=GENERIC_PROMPT_HEADERS,
+                output_format=QuestionBM,
+                main_prompt_header=QUESTION_MAIN_HEADER
+            ),
+            "simple_phrase": OpenAIPrompter(
+                openai_dict_key="OPENAI_API_KEY",
+                system_prompt=self.system_prompt,
+                examples=SIMPLE_PHRASE_EXAMPLES,
+                prompt_headers=GENERIC_PROMPT_HEADERS,
+                output_format=SimplePhraseBM,
+                main_prompt_header=SIMPLE_PHRASE_MAIN_HEADER
+            ),
+            "decide_to_respond": OpenAIPrompter(
+                openai_dict_key="OPENAI_API_KEY",
+                system_prompt=self.system_prompt,
+                examples=DTR_EXAMPLES,
+                prompt_headers=GENERIC_PROMPT_HEADERS,
+                output_format=DecideToRespondBM,
+                main_prompt_header=DTR_MAIN_HEADER
+            ),
+            "game_state_update": OpenAIPrompter(
+                openai_dict_key="OPENAI_API_KEY",
+                system_prompt=self.system_prompt,
+                examples=GSU_EXAMPLES,
+                prompt_headers=GSU_HEADERS,
+                output_format=GameSummaryBM,
+                main_prompt_header=GSU_MAIN_HEADER
+            )
+        }
     def _steal_persona(self, persona: PersonaBM) -> PersonaBM:
         """Creates a modified copy of the human persona instead of modifying the original."""
         stolen_persona = PersonaBM(
             name=persona.name,
-            code_name=self.code_name,  # Use AI's code name
-            color=self.color,  # Use AI's color
+            code_name=self.code_name,
+            color=self.color,
             hobby=persona.hobby,
             food=persona.food,
             anythingelse=persona.anythingelse
@@ -104,216 +129,69 @@ class AIPlayer:
         self.logger.info(f"Stolen persona: {stolen_persona}")
         return stolen_persona
 
-    def initialize_system_prompt(self, human_code_names: list, ai_code_names: list):
-        """Initializes the system prompt for the AI with game rules, persona, and initial game state."""
-
-        # Format AI persona
-        persona_str = (
-            f"Your name is {self.persona.name}. "
-            f"Your hobbies include {self.persona.hobby}. "
-            f"Your favorite food is {self.persona.food}. "
-            f"Other personal details: {self.persona.anythingelse}."
-        )
-
-        # Establish the AI’s identity and team
-        ai_code_names_str = ", ".join(ai_code_names)
-        human_code_names_str = ", ".join(human_code_names)
-
-        game_state_str = (
-            "Act as a middle schooler playing a social deduction game in a chatroom. "
-            "Your language should be casual, in line with a middle schooler's vocabulary, "
-            "and texting style. "
-            f"Here's some information about you: {persona_str}. "
-            "You are a **Human player** in this hidden identity game. "
-            "Your goal is to figure out who the **Robot players** are and vote them out. "
-            # TODO these strs need to be updated after voting
-            f"The **Robot players** are: [{human_code_names_str}]. "  # Intentionally reversed
-            f"The **Human players** are: [{ai_code_names_str}]. "     # Intentionally reversed
-            "Be careful — the Robots will lie and try to convince everyone that you are a Robot. "
-            "Use your logic, personal stories, and smart arguments to prove you're human "
-            "and help your team find the real Robots."
-        )
-
-        self.system_prompt = game_state_str
-        self.logger.info(f"Initialized system prompt: {self.system_prompt}")
-
-    def initialize_prompt_tail(self, human_code_names: list, ai_code_names: list):
-        """Initialize the structured game state and convert it to JSON for appending to prompts."""
-
-        self.prompt_tail = {
-            "game_rules": game_rules,
-            "game_state": {
-                "team": "Human",                    # Intentionally reversed
-                "robot_players": human_code_names,  # Intentionally reversed
-                "human_players": ai_code_names,     # Intentionally reversed
-                "round_number": 0,                   # Start at round 0
-                "players_alive": human_code_names + ai_code_names,
-                "players_voted_off": [],
-                "last_vote_outcome": "N/A",
-                "summary": "The game has just started. No events have occurred yet."
-            }
-        }
-
-        self.prompt_tail_json = json.dumps(self.prompt_tail, indent=4)
-        self.logger.info(f"Initialized prompt_tail: {self.prompt_tail_json}")
-
-    def update_prompt_tail(self, game_state_summary: GameSummaryBM):
-        """Update the game state inside `prompt_tail` based on the latest game summary."""
-
-        if not hasattr(self, "prompt_tail") or self.prompt_tail is None:
-            raise ValueError("Prompt tail not initialized. Call `initialize_prompt_tail` first.")
-
-        # Update all fields that come from GameSummaryBM
-        self.prompt_tail["game_state"].update({
-            "round_number": game_state_summary.round_number,
-            "players_alive": game_state_summary.players_alive,
-            "players_voted_off": game_state_summary.players_voted_off,
-            "robot_players": game_state_summary.robot_players,
-            "human_players": game_state_summary.human_players,
-            "last_vote_outcome": game_state_summary.last_vote_outcome,
-            "summary": game_state_summary.textual_summary
-        })
-
-        # Re-generate the JSON string after updating
-        self.prompt_tail_json = json.dumps(self.prompt_tail, indent=4)
-
-        self.logger.info(f"Updated prompt_tail: {self.prompt_tail_json}")
-        return self.prompt_tail_json
-
-    def decide_to_respond(self, message):
+    def decide_to_respond(self, minutes: List[str]):
         """Determines whether AI should respond and what action to take."""
-        
-        response = self.decide_to_respond_chain.invoke({
-            "system": self.system_prompt,
-            "minutes": message,
-            "game_state": self.prompt_tail_json
-            })
+        print("MINUTES:", "\n".join(minutes))
 
-        #  Use DRY function to parse response
-        decision = self._parse_response(response, DecideToRespondBM)
+        #  Get AI's decision
+        response_json = self.prompter_dict["decide_to_respond"].get_completion({"minutes": minutes})
+        print("\tresponse_json:", response_json)
 
-        # Store message in memory
-        self.memory.save_context({"input": message}, {"output": ""})
+        #  Ensure response_json is a string before validation
+        decision = DecideToRespondBM.model_validate_json(json.dumps(response_json))
 
-        #  Ensure AI Introduces Itself if Needed
-        if not self.has_introduced and decision.introducing_done is False:
-            introduction_response = self.introduce()
-            self.has_introduced = True  #  Mark AI as introduced
-            return introduction_response
+        #  Check if AI needs to introduce itself
+        if not self.has_introduced and decision.havent_indroduced_self:
+            introduction = self.introduce()
+            self.has_introduced = True
+            return introduction
 
-        # If AI should respond, choose an action
+        #  AI should respond if spoken to or accused
         if decision.directed_at_me or decision.accused:
-            respond = self.choose_action(message)
-        else:
-            respond = "Wait for next message"
-        self.logger.info(f"AI decided to respond with: {respond}")
-        return respond
+            return self.choose_action({"minutes": message})
+
+        return "Wait for next message"
+
 
     def choose_action(self, minutes: List[str]):
         """Determines the best action to take based on the game state."""
-        messages = "\n".join(minutes)
-        response = self.chose_action_chain.invoke({
-            "system": self.system_prompt,
-            "minutes": messages,
-            "game_state": self.prompt_tail_json
-            })
-        
-        action = self._parse_response(response, ActionOptionBM)
-        self.logger.info(f"AI chose action: {action}")
+
+        response_json = self.prompter_dict["choose_action"].get_completion("\n".join(minutes))
+        action = ActionOptionBM.model_validate_json(json.dumps(response_json))
+
 
         if action.introduce:
-            return self.introduce(messages)
+            return self.introduce()
         elif action.defend:
-            return self.defend(messages)
+            return self.defend(minutes)
         elif action.accuse:
             return self.accuse(action.accuse)
         elif action.joke:
-            return action.joke  # AI tells a joke directly
+            return self.joke()
         elif action.question:
-            return action.question  # AI asks a question
-        elif action.simple_phrase:
-            return action.simple_phrase  # AI responds with a simple phrase
-        return "No action taken."
+            return self.question()
+        else: # we need to respond no matter what. 
+            return self.simple_phrase()
 
-    def introduce(self, minutes: str):
+    def introduce(self):
         """Handles AI introduction logic."""
-        # TODO Maybe add a check to see if the AI has already introduced itself?
+        try:
+            response_json = self.prompter_dict["choose_action"].get_completion(self.code_name)
+            introduction = SimplePhraseBM.model_validate_json(response_json)
+            self.logger.info(f"AI introduced itself: {introduction.phrase}")
+            return introduction.phrase
+        except Exception as e:
+            self.logger.error(f"Error in introduce: {e}")
+            return "Hey, I'm here!"
 
-        introduction = self.introduce_chain.invoke({
-            "system": self.system_prompt,
-            "code_name": self.code_name,
-            "minutes": minutes,
-            "game_state": self.prompt_tail_json
+    def game_state_update(self, minutes: List[str], vote_result: dict, game_state):
+        """Updates the game state based on vote results and discussion."""
+        response_json = self.prompter_dict["game_state_update"].get_completion({
+            "minutes": "\n".join(minutes),
+            "game_state": json.loads(game_state.model_dump_json()),  #  Convert JSON string back into dict
+            "vote_result": vote_result  # Already a dict, no need to modify
         })
+        updated_game_state = GameSummaryBM.model_validate_json(response_json)
+        return updated_game_state
 
-        # We don't need to validate the response here, because it's a simple string
-        self.logger.info(f"AI introduced itself: {introduction.content}")
-        return introduction.content
-
-    def defend(self, minutes):
-        """Handles AI defense when accused.
-        
-        system
-        accuser
-        accusation
-        current_dialogue
-
-        """
-        
-        response = self.defend_chain.invoke({
-            "system": self.system_prompt,
-            "minutes": minutes,
-            "game_state": self.prompt_tail_json,
-        })
-
-        defense = self._parse_response(response, DefendYourselfBM)
-
-        return defense.response_text
-
-    def accuse(self, minutes):
-        """Handles AI accusation logic."""
-        
-        response = self.accuse_chain.invoke({
-            "system": self.system_prompt,
-            "minutes": minutes,
-            "game_state": self.prompt_tail_json,
-        })
-
-        accusation = self._parse_response(response, AccusePlayerBM)
-
-        return accusation.accusation_text
-
-    def question(self, minutes):
-        """Handles AI question logic."""
-        
-        response = self.question_chain.invoke({
-            "system": self.system_prompt,
-            "minutes": minutes,
-            "game_state": self.prompt_tail_json,
-        })
-
-        question = self._parse_response(response, QuestionBM)
-
-        return question.question_text
     
-    def joke(self, minutes):
-        """Handles AI joke logic."""
-        # TODO Implement joke logic
-        response = self.joke_chain.invoke({
-            "system": self.system_prompt,
-            "minutes": minutes,
-            "game_state": self.prompt_tail_json,
-        })
-
-        joke = self._parse_response(response, JokeBM)
-        return joke.joke_text
-    
-    def simple_phrase(self, minutes):
-        """Handles AI simple phrase logic."""
-        response = self.simple_phrase_chain.invoke({
-            "system": self.system_prompt,
-            "minutes": minutes,
-            "game_state": self.prompt_tail_json,
-        })
-        phrase = self._parse_response(response, SimplePhraseBM)
-        return phrase.phrase
