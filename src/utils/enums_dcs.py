@@ -47,7 +47,11 @@ class ActionOptionBM(BaseModel):
             if len(filled_fields) > 1:
                 raise ValueError(f"Only one response can be provided at a time. Found: {filled_fields}")
         return v
-        
+
+class IntroBM(BaseModel):
+    reasoning: str  # Explanation for why this action was chosen
+    output_text: str  # The AI's output for the chat
+
 class _DefenseChoices(BaseModel):
     accuse: Optional[str] = None  # Redirect suspicion to another player
     deescalate: Optional[str] = None  # Reduce tension and shift focus
@@ -67,7 +71,7 @@ class DefendYourselfBM(BaseModel):
     accusation: str
     defense_choice: _DefenseChoices
     reasoning: str
-    accusation_text: str # The AI's output for the chat
+    output_text: str # The AI's output for the chat
 
     def validate_defense(self):
         """Ensures the defense_choice is valid."""
@@ -76,11 +80,11 @@ class DefendYourselfBM(BaseModel):
 class AccusePlayerBM(BaseModel):
     player_to_accuse: str  # The player being accused
     reasoning: str  # The AI's reasoning for the accusation
-    accusation_text: str  # The AI's output for the chat
+    output_text: str  # The AI's output for the chat
 
 # Base Model for Simple Phrases (e.g., "I agree", "lol")
 class SimplePhraseBM(BaseModel):
-    phrase: str  # The short response AI gives
+    output_text: str  # The short response AI gives
 
 class GameSummaryBM(BaseModel):
     round_number: int
@@ -90,13 +94,13 @@ class GameSummaryBM(BaseModel):
     textual_summary: str  # A human-readable summary of the game's progression
 
 class JokeBM(BaseModel):
-    joke_text: str
+    output_text: str
     reasoning: str  # Why did the AI pick this joke? What does it hope to achieve?
     joke_target: Optional[str] = None  # Is this aimed at a player, game event, or topic?
     joke_tone: Optional[str] = "lighthearted"  # Could be: lighthearted, awkward, self-deprecating, etc.
 
 class QuestionBM(BaseModel):
-    question_text: str
+    output_text: str
     context: Optional[str] = None  # Existing context is still useful
     intent: str  # What does the AI want to achieve with this question?
     target_player: Optional[str] = None  # Who is the question aimed at, if anyone?

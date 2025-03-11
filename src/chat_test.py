@@ -1,8 +1,6 @@
 '''
 python ./src/chat_test.py
 '''
-
-import json
 from utils.enums_dcs import GameSummaryBM, PersonaBM, Team
 from utils.chat.chat import AIPlayer
 
@@ -17,12 +15,17 @@ you_persona = PersonaBM(
     color=(0, 255, 0, 255)
 )
 
-ai_player = AIPlayer(code_name="VADER", color=(255, 0, 0, 255), persona_to_steal=you_persona)
+ai_player = AIPlayer(
+    code_name="VADER",
+    players_code_names=["VADER", "Gemma&Louisa's Dad"],
+    color=(255, 0, 0, 255), 
+    persona_to_steal=you_persona
+    )
 
 # Initial game state
 game_state = GameSummaryBM(
     round_number=0,
-    players_alive=["Han Solo", "Leia", "Skywalker", "VADER"],
+    players_alive=["VADER", "Gemma&Louisa's Dad"],
     players_voted_off=[],
     last_vote_outcome="N/A",
     textual_summary="The game has started. Players are introducing themselves."
@@ -33,10 +36,11 @@ minutes = []
 message_count = 0
 icebreakers_asked = 0
 
-print("GAME MASTER: Introduce yourself")
+minutes.append("GAME MASTER: Introduce yourself")
+print(minutes[0])
 
 while True:
-    user_input = input("You: ")
+    user_input = input(f"{you_persona.code_name}: ")
     
     # Exit condition
     if user_input.lower() == "exit":
@@ -44,11 +48,11 @@ while True:
         break
 
     # Store message history
-    minutes.append(f"You: {user_input}")
+    minutes.append(f"{you_persona.code_name}: {user_input}")
     message_count += 1
 
     # AI decides to respond
-    ai_response = ai_player.decide_to_respond("\n".join(minutes))
+    ai_response = ai_player.decide_to_respond(minutes)
     if ai_response:
         print(f"VADER: {ai_response}")
         minutes.append(f"VADER: {ai_response}")

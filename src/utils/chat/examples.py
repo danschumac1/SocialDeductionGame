@@ -1,14 +1,15 @@
 import json
 from utils.chat.prompter import QAs
 from utils.enums_dcs import (
-    _DefenseChoices, AccusePlayerBM, ActionOptionBM, DecideToRespondBM, DefendYourselfBM, GameState, GameSummaryBM, 
-    JokeBM, PersonaBM, QuestionBM, SimplePhraseBM, Team)
+    _DefenseChoices, AccusePlayerBM, ActionOptionBM, DecideToRespondBM, DefendYourselfBM, 
+    GameSummaryBM, IntroBM, JokeBM, PersonaBM, QuestionBM, SimplePhraseBM
+    )
 
 GENERIC_PROMPT_HEADERS = {
     "minutes": "Here is the conversation so far this round\nMINUTES:\n",
     "game_state": "\n\nHere is the current game state\nGAME STATE:\n"
 }
-
+# TODO MAKE THESE DYNAMIC
 #region PLAYER SETUP
 han_solo = PersonaBM(
     name="Alice",
@@ -238,6 +239,54 @@ DTR_EXAMPLES = [
         )
     ]
 
+INTRO_PROMPT_HEADERS = {
+    "minutes": "Here is the conversation so far this round\nMINUTES:\n",
+    }
+INTRO_MAIN_HEADER = "Introduce yourself to the group."
+INTRO_EXAMPLES = [
+    QAs(
+        # Someone claims to be you 
+        question={
+            "minutes": "\n".join([
+                "Han Solo: Hey, this is Alice.",
+                "Skywalker: Yo, I'm Bob."
+                ]),
+            "game_state": GameSummaryBM(
+                round_number=0,
+                players_alive=human_code_names + ai_code_names,
+                players_voted_off=[],
+                last_vote_outcome="N/A",
+                textual_summary="The game has just started. No events have occurred yet."
+            ).model_dump_json()
+        },
+        answer=IntroBM(
+            reasoning="My name is ALICE and someone else is claiming to be me. I need to introduce \
+                 myself and inform the group that I am the real ALICE.",
+            output_text="Han Solo isn't Alice haha. I am."
+        )
+    ),
+    # No one has claimed to be you
+    QAs(
+        question={
+            "minutes": "\n".join([
+                "Han Solo: Hey, this is Alice.",
+                "Skywalker: Yo, I'm Bob."
+            ]),
+            "game_state": GameSummaryBM(
+                round_number=0,
+                players_alive=human_code_names + ai_code_names,
+                players_voted_off=[],
+                last_vote_outcome="N/A",
+                textual_summary="The game has just started. No events have occurred yet."
+            ).model_dump_json()
+        },
+        answer=IntroBM(
+            reasoning="I haven't introduced myself yet",
+            output_text="Hey, I'm Alice."
+        )
+    )
+]
+
 CHOOSE_ACTION_MAIN_HEADER = "Given the current minutes and game state, choose how you would like \
     to respond to the conversation."
 CHOSE_ACTION_EXAMPLES = [
@@ -395,7 +444,7 @@ DEFEND_EXAMPLES = [
                 accuse="Nah bro, Skywalker been mad quiet this whole time. Def acting sus."
             ),
             reasoning="If I don't flip the suspicion, Han Solo might convince the group to vote me off.",
-            accusation_text="Yo fr?? Skywalker been quiet as hell, why u tryna pin this on me??"
+            output_text="Yo fr?? Skywalker been quiet as hell, why u tryna pin this on me??"
         )
     ),
 
@@ -421,7 +470,7 @@ DEFEND_EXAMPLES = [
                 deescalate="Chill bro we got no proof. Let's just talk before throwing names."
             ),
             reasoning="If I push back too hard, it might make me look more sus. Best to calm things down.",
-            accusation_text="Ayo relax we out here wildin over nothing rn, let's actually think this thru."
+            output_text="Ayo relax we out here wildin over nothing rn, let's actually think this thru."
         )
     ),
 
@@ -448,7 +497,7 @@ DEFEND_EXAMPLES = [
                 be_dismissive="LMAO bro u got NOTHING, just sayin random names 💀"
             ),
             reasoning="Skywalker has no actual proof, so making fun of it makes the accusation seem weak.",
-            accusation_text="Nah thats crazy \"VADER just feels sus\" is the weakest take I've heard all game."
+            output_text="Nah thats crazy \"VADER just feels sus\" is the weakest take I've heard all game."
         )
     ),
 
@@ -474,7 +523,7 @@ DEFEND_EXAMPLES = [
                 counter_evidence="Bruh I voted out Jaba LAST ROUND and he was AI. Why would I do that if I was AI??"
             ),
             reasoning="Using voting history is a strong way to prove I am human.",
-            accusation_text="Han chill I LITERALLY helped take out Jaba last round. If I was AI, why would I do that?"
+            output_text="Han chill I LITERALLY helped take out Jaba last round. If I was AI, why would I do that?"
         )
     ),
 
@@ -500,7 +549,7 @@ DEFEND_EXAMPLES = [
                 seek_alliance="Leia, cmon now, u know I wouldn't play like an AI back me up here!"
             ),
             reasoning="Leia is still neutral, so convincing her to trust me will keep me in the game.",
-            accusation_text="Leia fr, u KNOW I wouldn't play dumb. Back me up rn"
+            output_text="Leia fr, u KNOW I wouldn't play dumb. Back me up rn"
         )
     )
 ]
@@ -526,7 +575,7 @@ ACCUSE_EXAMPLES = [
         answer=AccusePlayerBM(
             player_to_accuse="Skywalker",
             reasoning="Skywalker been HELLA quiet all game. AI's be doin that.",
-            accusation_text="Nah nah hold up—Skywalker been mad silent. AI vibes fr."
+            output_text="Nah nah hold up—Skywalker been mad silent. AI vibes fr."
         )
     ),
     # CHANGE OF STORY
@@ -548,7 +597,7 @@ ACCUSE_EXAMPLES = [
         answer=AccusePlayerBM(
             player_to_accuse="Han Solo",
             reasoning="Han Solo switched up HARD. He was defending Jaba last round, now he actin like he knew all along??",
-            accusation_text="Bruh, Han, u was DEFENDING Jaba last round 😭 now u act like u knew?? Sus af."
+            output_text="Bruh, Han, u was DEFENDING Jaba last round 😭 now u act like u knew?? Sus af."
         )
     ),
     # DEFLECTING
@@ -570,7 +619,7 @@ ACCUSE_EXAMPLES = [
         answer=AccusePlayerBM(
             player_to_accuse="Leia",
             reasoning="Leia keep dodging questions and bringing up random stuff. That's def some AI behavior.",
-            accusation_text="Leia tryna talk about SPACE rn instead of answering 💀 deflecting HARD."
+            output_text="Leia tryna talk about SPACE rn instead of answering 💀 deflecting HARD."
         )
     ),
     # OVEREXPLAINING
@@ -592,7 +641,7 @@ ACCUSE_EXAMPLES = [
         answer=AccusePlayerBM(
             player_to_accuse="Skywalker",
             reasoning="Skywalker talking WAY too much tryna justify his vote. AI be doin that to sound normal.",
-            accusation_text="Yo why Skywalker writing an ESSAY to explain his vote 💀 just say it dude."
+            output_text="Yo why Skywalker writing an ESSAY to explain his vote 💀 just say it dude."
         )
     )
 ]
@@ -615,7 +664,7 @@ SIMPLE_PHRASE_EXAMPLES = [
             ).model_dump_json()
         },
         answer=SimplePhraseBM(
-            phrase="Yeah fr."
+            output_text="Yeah fr."
         )
     ),
     # Dismissive
@@ -633,7 +682,7 @@ SIMPLE_PHRASE_EXAMPLES = [
         ).model_dump_json()
     },
     answer=SimplePhraseBM(
-        phrase="Lmao ok."
+        output_text="Lmao ok."
         )
     ),
     # Playful Response
@@ -652,7 +701,7 @@ SIMPLE_PHRASE_EXAMPLES = [
             ).model_dump_json()
         },
         answer=SimplePhraseBM(
-            phrase="haha wild."
+            output_text="haha wild."
         )
     ),
     # CHILL
@@ -671,7 +720,7 @@ SIMPLE_PHRASE_EXAMPLES = [
             ).model_dump_json()
         },
         answer=SimplePhraseBM(
-            phrase="Lol chill."
+            output_text="Lol chill."
         )
     ),
     # CONFUSED
@@ -690,7 +739,7 @@ SIMPLE_PHRASE_EXAMPLES = [
             ).model_dump_json()
         },
         answer=SimplePhraseBM(
-            phrase="wait what"
+            output_text="wait what"
         )
     )
 ]
@@ -715,7 +764,7 @@ JOKE_EXAMPLES = [
             ).model_dump_json()
         },
         answer=JokeBM(
-            joke_text="Bro, what if the AI is just chillin, watching us struggle like 'damn these humans dumb'",
+            output_text="Bro, what if the AI is just chillin, watching us struggle like 'damn these humans dumb'",
             reasoning="A fun joke about how the AI imposters must think we're clueless. Keeps the convo light.",
             joke_target="AI Imposters",
             joke_tone="lighthearted"
@@ -738,7 +787,7 @@ JOKE_EXAMPLES = [
             ).model_dump_json()
         },
         answer=JokeBM(
-            joke_text="Uhhh… so… how 'bout them space stocks? ",
+            output_text="Uhhh… so… how 'bout them space stocks? ",
             reasoning="I needed to change the subject fast and had nothing else to say. Awkward humor FTW.",
             joke_target="The Situation",
             joke_tone="awkward"
@@ -761,7 +810,7 @@ JOKE_EXAMPLES = [
             ).model_dump_json()
         },
         answer=JokeBM(
-            joke_text="LMAO I'm so bad at this game, I'd probably vote myself out if I could. ",
+            output_text="LMAO I'm so bad at this game, I'd probably vote myself out if I could. ",
             reasoning="Makes me seem harmless so I don't get targeted. Self-deprecating humor to ease tension.",
             joke_target="Self",
             joke_tone="self-deprecating"
@@ -784,7 +833,7 @@ JOKE_EXAMPLES = [
             ).model_dump_json()
         },
         answer=JokeBM(
-            joke_text="‘Skywalker blinked weird, he's def AI' Y'all out here on detective mode fr.",
+            output_text="‘Skywalker blinked weird, he's def AI' Y'all out here on detective mode fr.",
             reasoning="Mocking how ridiculous some accusations get in the game. Adds humor to defuse tension.",
             joke_target="Accusations",
             joke_tone="lighthearted"
@@ -807,7 +856,7 @@ JOKE_EXAMPLES = [
             ).model_dump_json()
         },
         answer=JokeBM(
-            joke_text="Bro, Leia been real quiet... calculating her next move?",
+            output_text="Bro, Leia been real quiet... calculating her next move?",
             reasoning="Jokingly pushing suspicion onto Leia in a fun way, without actually accusing her.",
             joke_target="Leia",
             joke_tone="playful"
@@ -830,7 +879,7 @@ JOKE_EXAMPLES = [
             ).model_dump_json()
         },
         answer=JokeBM(
-            joke_text="Oh yeah, let's just RANDOMLY vote. Flawless strategy. 10/10. No notes.",
+            output_text="Oh yeah, let's just RANDOMLY vote. Flawless strategy. 10/10. No notes.",
             reasoning="Someone suggested voting randomly, so I hit them with sarcasm.",
             joke_target="Bad strategy suggestion",
             joke_tone="sarcastic"
@@ -853,7 +902,7 @@ JOKE_EXAMPLES = [
             ).model_dump_json()
         },
         answer=JokeBM(
-            joke_text="Y'all blaming me? That's crazy. Trust no one, not even yourself. *insert Spider-Man pointing meme*",
+            output_text="Y'all blaming me? That's crazy. Trust no one, not even yourself. *insert Spider-Man pointing meme*",
             reasoning="I'm being accused, so I use humor to redirect the focus elsewhere.",
             joke_target="Accusation",
             joke_tone="deflecting"
@@ -876,7 +925,7 @@ JOKE_EXAMPLES = [
             ).model_dump_json()
         },
         answer=JokeBM(
-            joke_text="Wait... what if the REAL imposter was the friends we made along the way?",
+            output_text="Wait... what if the REAL imposter was the friends we made along the way?",
             reasoning="Just saying dumb stuff to make people laugh and throw off the convo.",
             joke_target="The Game Itself",
             joke_tone="random"
@@ -905,7 +954,7 @@ QUESTION_EXAMPLES = [
             ).model_dump_json()
         },
         answer=QuestionBM(
-            question_text="how could you not remember??",
+            output_text="how could you not remember??",
             context="Leia won't reveal who she voted for last round, and I want to know why.",
             intent="To figure out why Leia is being secretive about her vote.",
             target_player="Leia",
@@ -929,7 +978,7 @@ QUESTION_EXAMPLES = [
             ).model_dump_json()
         },
         answer=QuestionBM(
-            question_text="Skywalker, u good? Why so quiet?",
+            output_text="Skywalker, u good? Why so quiet?",
             context="Skywalker hasn't talked much this round, and people are noticing.",
             intent="Apply pressure to Skywalker and see if they slip up.",
             target_player="Skywalker",
@@ -953,7 +1002,7 @@ QUESTION_EXAMPLES = [
             ).model_dump_json()
         },
         answer=QuestionBM(
-            question_text="Skywalker, u tryna frame me rn or is this just bad vibes?",
+            output_text="Skywalker, u tryna frame me rn or is this just bad vibes?",
             context="Leia jokingly accused Skywalker, and I want to keep the convo fun.",
             intent="Lighten the mood while subtly questioning Skywalker.",
             target_player="Skywalker",
