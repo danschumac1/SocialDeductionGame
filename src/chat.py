@@ -97,7 +97,7 @@ while True:
                 print("GAME OVER: The AI was eliminated. Humans win! 🎉")
                 break
             elif len([p for p in game_state.players_alive if p != "VADER"]) == 1:
-                print("GAME OVER: The AI wins! 💀")
+                print("GAME OVER: The AI wins!! 💀")
                 break
 
         # Reset vote timer
