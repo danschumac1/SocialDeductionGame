@@ -31,6 +31,7 @@ class DecideToRespondBM(BaseModel):
     reasoning: str # Explanation for why this action was chosen
 
 class ActionOptionBM(BaseModel):
+    reasoning: str = None # Explanation for why this action was chosen
     introduce: Optional[bool] = None
     defend: Optional[bool] = None
     accuse: Optional[bool] = None
@@ -38,20 +39,19 @@ class ActionOptionBM(BaseModel):
     question: Optional[bool] = None
     simple_phrase: Optional[bool] = None
     other: Optional[bool] = None  # Placeholder for any other actions
-    reasoning: str = None  # Explanation for why this action was chosen
 
-    @model_validator(mode="before")
-    @classmethod
-    def enforce_exactly_one_true(cls, values):
-        action_fields = ["introduce", "defend", "accuse", "joke", "question", "simple_phrase", "other"]
-        true_fields = [field for field in action_fields if values.get(field) is True]
+    # @model_validator(mode="before")
+    # @classmethod
+    # def enforce_exactly_one_true(cls, values):
+    #     action_fields = ["introduce", "defend", "accuse", "joke", "question", "simple_phrase", "other"]
+    #     true_fields = [field for field in action_fields if values.get(field) is True]
 
-        if len(true_fields) != 1:
-            raise ValueError(
-                f"Exactly one action must be True. Found {len(true_fields)}: {true_fields}"
-            )
+    #     if len(true_fields) != 1:
+    #         raise ValueError(
+    #             f"Exactly one action must be True. Found {len(true_fields)}: {true_fields}"
+    #         )
 
-        return values
+    #     return values
 
 
 class IntroBM(BaseModel):
