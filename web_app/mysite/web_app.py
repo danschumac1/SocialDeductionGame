@@ -252,12 +252,10 @@ def get_unique_codename():                  # Assigns each player a unique coden
         codenames = f.read().splitlines()
     return random.choice(codenames)
 
-
 def get_unique_color():                     # Assigns each player a unique text color
     with open(COLOR_FILE, "r") as f:
         colors = f.read().splitlines()
     return random.choice(colors)
-
 
 def get_next_game_number():                 # Assigns and increments the game id
     if not os.path.exists(GAME_COUNTER_FILE):
@@ -272,7 +270,6 @@ def get_next_game_number():                 # Assigns and increments the game id
         f.write(str(game_number + 1))
 
     return game_number
-
 
 @app.route("/submit_info", methods=["POST"])
 def submit_info():
@@ -324,7 +321,8 @@ def start_game():
 
     # Log game start
     with open(GAME_LOG_FILE, "a") as f:
-        f.write(f"Game ID: {game_id} Human Players: {len(lobbies[lobby_id]['players'])} Duration: TBD Winner: TBD Completed: TBD\n")
+        f.write(
+            f"Game ID: {game_id} Human Players: {len(lobbies[lobby_id]['players'])} Duration: TBD Winner: TBD Completed: TBD\n")
 
     access_logger.info(f"Game {game_id} started for Lobby {lobby_id}")
 
