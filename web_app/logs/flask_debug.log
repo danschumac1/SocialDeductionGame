@@ -1,0 +1,769 @@
+DEBUG:server:Received lobby deletion request: {'lobby_id': 1, 'password': 'meat'}
+INFO:access:Lobby 1 deleted. Players removed: ['dot']
+DEBUG:server:Received lobby creation request: {'max_players': 1, 'password': 'meat'}
+INFO:access:Lobby 1 created: {'1': {'max_players': 1, 'players': [], 'status': 'waiting', 'game_id': 0}}
+INFO:access:Haven joined Lobby 1: ['Haven']
+ERROR:root:OSError: write error
+INFO:access:Game 17 started for Lobby 1
+INFO:access:Game 17 started for Lobby 1
+INFO:access:Game 17 started for Lobby 1
+ERROR:root:OSError: write error
+DEBUG:server:Received lobby deletion request: {'lobby_id': 1, 'password': 'meat'}
+INFO:access:Lobby 1 deleted. Players removed: ['Haven']
+DEBUG:server:Received lobby creation request: {'max_players': 1, 'password': 'meat'}
+INFO:access:Lobby 1 created: {'1': {'max_players': 1, 'players': [], 'status': 'waiting', 'game_id': 0}}
+INFO:access:Boop joined Lobby 1: ['Boop']
+INFO:access:Game 18 started for Lobby 1
+INFO:access:Game 18 started for Lobby 1
+ERROR:root:OSError: write error
+DEBUG:server:Received lobby creation request: {'max_players': 1, 'password': 'meat'}
+INFO:access:Lobby 2 created: {'1': {'max_players': 1, 'players': ['Boop'], 'status': 'Ongoing Game', 'game_id': 18}, '2': {'max_players': 1, 'players': [], 'status': 'waiting', 'game_id': 0}}
+INFO:access:Haven joined Lobby 2: ['Haven']
+INFO:access:Game 19 started for Lobby 2
+INFO:access:Game 19 started for Lobby 2
+ERROR:web_app:Exception on /game/1 [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    game_id = lobbies[lobby_id].get("game_id")
+NameError: name 'lobby_id' is not defined
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    game_id = lobbies[lobby_id].get("game_id")
+NameError: name 'lobby_id' is not defined
+ERROR:web_app:Exception on /game/1 [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    game_id = lobbies[lobby_id].get("game_id")
+NameError: name 'lobby_id' is not defined
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    game_id = lobbies[lobby_id].get("game_id")
+NameError: name 'lobby_id' is not defined
+DEBUG:server:Received lobby deletion request: {'lobby_id': 1, 'password': 'meat'}
+INFO:access:Lobby 1 deleted. Players removed: ['Boop']
+DEBUG:server:Received lobby deletion request: {'lobby_id': 2, 'password': 'meat'}
+INFO:access:Lobby 2 deleted. Players removed: ['Haven']
+DEBUG:server:Received lobby creation request: {'max_players': 1, 'password': 'meat'}
+INFO:access:Lobby 1 created: {'1': {'max_players': 1, 'players': [], 'status': 'waiting', 'game_id': 0}}
+INFO:access:Bob joined Lobby 1: ['Bob']
+INFO:access:Game 20 started for Lobby 1
+INFO:access:Game 20 started for Lobby 1
+ERROR:root:OSError: write error
+INFO:access:Game 20 started for Lobby 1
+ERROR:web_app:Exception on /submit_info [POST]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 282, in submit_info
+    game_id = lobbies[lobby_id].get("game_id")
+KeyError: 'Bob'
+ERROR:web_app:Exception on /submit_info [POST]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 282, in submit_info
+    game_id = lobbies[lobby_id].get("game_id")
+KeyError: 'Bob'
+ERROR:web_app:Exception on /submit_info [POST]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 282, in submit_info
+    game_id = lobbies[lobby_id].get("game_id")
+KeyError: 'Bob'
+ERROR:web_app:Exception on /submit_info [POST]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 282, in submit_info
+    game_id = lobbies[lobby_id].get("game_id")
+KeyError: 'Bob'
+ERROR:web_app:Exception on /submit_info [POST]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 282, in submit_info
+    game_id = lobbies[lobby_id].get("game_id")
+KeyError: 'Bob'
+ERROR:web_app:Exception on /game/1 [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    game_id = lobbies[lobby_id].get("game_id")
+NameError: name 'lobby_id' is not defined
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    game_id = lobbies[lobby_id].get("game_id")
+NameError: name 'lobby_id' is not defined
+ERROR:web_app:Exception on /game/1 [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    game_id = lobbies[lobby_id].get("game_id")
+NameError: name 'lobby_id' is not defined
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    game_id = lobbies[lobby_id].get("game_id")
+NameError: name 'lobby_id' is not defined
+DEBUG:server:Received lobby deletion request: {'lobby_id': 1, 'password': 'meat'}
+INFO:access:Lobby 1 deleted. Players removed: ['Bob']
+DEBUG:server:Received lobby creation request: {'max_players': 1, 'password': 'meat'}
+INFO:access:Lobby 1 created: {'1': {'max_players': 1, 'players': [], 'status': 'waiting', 'game_id': 0}}
+INFO:access:Tim joined Lobby 1: ['Tim']
+INFO:access:Game 21 started for Lobby 1
+INFO:access:Game 21 started for Lobby 1
+INFO:access:Game 21 started for Lobby 1
+ERROR:web_app:Exception on /game/21 [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    game_id = lobbies[lobby_id].get("game_id")
+NameError: name 'lobby_id' is not defined
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    game_id = lobbies[lobby_id].get("game_id")
+NameError: name 'lobby_id' is not defined
+ERROR:web_app:Exception on /game/21 [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    game_id = lobbies[lobby_id].get("game_id")
+NameError: name 'lobby_id' is not defined
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    game_id = lobbies[lobby_id].get("game_id")
+NameError: name 'lobby_id' is not defined
+DEBUG:server:Received lobby deletion request: {'lobby_id': 1, 'password': 'meat'}
+INFO:access:Lobby 1 deleted. Players removed: ['Tim']
+DEBUG:server:Received lobby creation request: {'max_players': 1, 'password': 'meat'}
+INFO:access:Lobby 1 created: {'1': {'max_players': 1, 'players': [], 'status': 'waiting', 'game_id': 0}}
+INFO:access:Rob joined Lobby 1: ['Rob']
+INFO:access:Game 22 started for Lobby 1
+INFO:access:Game 22 started for Lobby 1
+INFO:access:Game 22 started for Lobby 1
+ERROR:web_app:Exception on /game/22 [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    game_id = lobbies[lobby_id].get("game_id")
+NameError: name 'lobby_id' is not defined
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    game_id = lobbies[lobby_id].get("game_id")
+NameError: name 'lobby_id' is not defined
+ERROR:web_app:Exception on /game/22 [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    game_id = lobbies[lobby_id].get("game_id")
+NameError: name 'lobby_id' is not defined
+ERROR:root:OSError: write error
+ERROR:web_app:Exception on /game/22 [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    game_id = lobbies[lobby_id].get("game_id")
+NameError: name 'lobby_id' is not defined
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    game_id = lobbies[lobby_id].get("game_id")
+NameError: name 'lobby_id' is not defined
+DEBUG:server:Received lobby deletion request: {'lobby_id': 1, 'password': 'meat'}
+INFO:access:Lobby 1 deleted. Players removed: ['Rob']
+DEBUG:server:Received lobby creation request: {'max_players': 1, 'password': 'meat'}
+INFO:access:Lobby 1 created: {'1': {'max_players': 1, 'players': [], 'status': 'waiting', 'game_id': 0}}
+INFO:access:Test joined Lobby 1: ['Test']
+INFO:access:Game 23 started for Lobby 1
+INFO:access:Game 23 started for Lobby 1
+INFO:access:Game 23 started for Lobby 1
+ERROR:web_app:Exception on /game/23 [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    game_id = lobbies[lobby_id].get("game_id")
+NameError: name 'lobby_id' is not defined
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    game_id = lobbies[lobby_id].get("game_id")
+NameError: name 'lobby_id' is not defined
+ERROR:web_app:Exception on /game/23 [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    game_id = lobbies[lobby_id].get("game_id")
+NameError: name 'lobby_id' is not defined
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 85, in game
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 85, in <genexpr>
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+ValueError: invalid literal for int() with base 10: 'passkeys.js.map'
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 85, in game
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 85, in <genexpr>
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+ValueError: invalid literal for int() with base 10: 'passkeys.js.map'
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 85, in game
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 85, in <genexpr>
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+ValueError: invalid literal for int() with base 10: 'passkeys.js.map'
+ERROR:web_app:Exception on /send_message [POST]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 376, in send_message
+    player_data = next((info for info in player_info.splitlines() if info.startswith(player_name)), None)
+AttributeError: 'dict' object has no attribute 'splitlines'
+ERROR:web_app:Exception on /send_message [POST]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 376, in send_message
+    player_data = next((info for info in player_info.splitlines() if info.startswith(player_name)), None)
+AttributeError: 'dict' object has no attribute 'splitlines'
+ERROR:web_app:Exception on /send_message [POST]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 376, in send_message
+    player_data = next((info for info in player_info.splitlines() if info.startswith(player_name)), None)
+AttributeError: 'dict' object has no attribute 'splitlines'
+ERROR:web_app:Exception on /send_message [POST]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 376, in send_message
+    player_data = next((info for info in player_info.splitlines() if info.startswith(player_name)), None)
+AttributeError: 'dict' object has no attribute 'splitlines'
+ERROR:web_app:Exception on /game/23:1:1 [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 85, in game
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 85, in <genexpr>
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+ValueError: invalid literal for int() with base 10: '23:1:1'
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 85, in game
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 85, in <genexpr>
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+ValueError: invalid literal for int() with base 10: 'passkeys.js.map'
+ERROR:error:Error in send_message: 'dict' object has no attribute 'splitlines'
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 85, in game
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 85, in <genexpr>
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+ValueError: invalid literal for int() with base 10: 'passkeys.js.map'
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 85, in game
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 85, in <genexpr>
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+ValueError: invalid literal for int() with base 10: 'passkeys.js.map'
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 85, in game
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 85, in <genexpr>
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+ValueError: invalid literal for int() with base 10: 'passkeys.js.map'
+ERROR:root:OSError: write error
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 85, in game
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 85, in <genexpr>
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+ValueError: invalid literal for int() with base 10: 'passkeys.js.map'
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in <genexpr>
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+ValueError: invalid literal for int() with base 10: 'passkeys.js.map'
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in <genexpr>
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+ValueError: invalid literal for int() with base 10: 'passkeys.js.map'
+DEBUG:server:Received lobby deletion request: {'lobby_id': 1, 'password': 'meat'}
+INFO:access:Lobby 1 deleted. Players removed: ['Test']
+DEBUG:server:Received lobby creation request: {'max_players': 1, 'password': 'meat'}
+INFO:access:Lobby 1 created: {'1': {'max_players': 1, 'players': [], 'status': 'waiting', 'game_id': 0}}
+INFO:access:God joined Lobby 1: ['God']
+INFO:access:Game 24 started for Lobby 1
+INFO:access:Game 24 started for Lobby 1
+INFO:access:Game 24 started for Lobby 1
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in <genexpr>
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+ValueError: invalid literal for int() with base 10: 'passkeys.js.map'
+ERROR:root:OSError: write error
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in <genexpr>
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+ValueError: invalid literal for int() with base 10: 'passkeys.js.map'
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in <genexpr>
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+ValueError: invalid literal for int() with base 10: 'passkeys.js.map'
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in <genexpr>
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+ValueError: invalid literal for int() with base 10: 'passkeys.js.map'
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in <genexpr>
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+ValueError: invalid literal for int() with base 10: 'passkeys.js.map'
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in <genexpr>
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+ValueError: invalid literal for int() with base 10: 'passkeys.js.map'
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in <genexpr>
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+ValueError: invalid literal for int() with base 10: 'passkeys.js.map'
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in <genexpr>
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+ValueError: invalid literal for int() with base 10: 'passkeys.js.map'
+ERROR:root:OSError: write error
+ERROR:web_app:Exception on /game/passkeys.js.map [GET]
+Traceback (most recent call last):
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/SocialDedictionGame/.virtualenvs/venv/lib/python3.10/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in game
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+  File "/home/SocialDedictionGame/mysite/web_app.py", line 84, in <genexpr>
+    if not any(lobby["game_id"] == int(game_id) for lobby in lobbies.values()):
+ValueError: invalid literal for int() with base 10: 'passkeys.js.map'
+DEBUG:server:Received lobby creation request: {'max_players': 1, 'password': 'meat'}
+INFO:access:Lobby 2 created: {'1': {'max_players': 1, 'players': ['God'], 'status': 'Ongoing Game', 'game_id': 24}, '2': {'max_players': 1, 'players': [], 'status': 'waiting', 'game_id': 0}}
+INFO:access:Dan joined Lobby 2: ['Dan']
+INFO:access:Game 25 started for Lobby 2
+INFO:access:Game 25 started for Lobby 2
+INFO:access:Game 25 started for Lobby 2
+INFO:access:Game 25 started for Lobby 2
+INFO:access:Game 25 started for Lobby 2
+INFO:access:Game 25 started for Lobby 2
+INFO:access:Game 25 started for Lobby 2
+INFO:access:Game 25 started for Lobby 2
+INFO:access:Game 25 started for Lobby 2
+DEBUG:server:Received lobby creation request: {'max_players': 2, 'password': 'meat'}
+INFO:access:Lobby 3 created: {'1': {'max_players': 1, 'players': ['God'], 'status': 'Ongoing Game', 'game_id': 24}, '2': {'max_players': 1, 'players': ['Dan'], 'status': 'Ongoing Game', 'game_id': 25}, '3': {'max_players': 2, 'players': [], 'status': 'waiting', 'game_id': 0}}
+INFO:access:meat joined Lobby 3: ['meat']
+INFO:access:meat2 joined Lobby 3: ['meat', 'meat2']
+INFO:access:Game 26 started for Lobby 3
+INFO:access:Game 26 started for Lobby 3
+INFO:access:Game 26 started for Lobby 3
+INFO:access:Game 26 started for Lobby 3
+INFO:access:Game 26 started for Lobby 3

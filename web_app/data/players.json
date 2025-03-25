@@ -1,0 +1,14 @@
+{
+    "God": {
+        "lobby_id": "1"
+    },
+    "Dan": {
+        "lobby_id": "2"
+    },
+    "meat": {
+        "lobby_id": "3"
+    },
+    "meat2": {
+        "lobby_id": "3"
+    }
+}

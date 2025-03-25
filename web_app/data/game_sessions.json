@@ -1,0 +1,9 @@
+{
+    "1": {
+        "max_players": 1,
+        "players": [
+            "Tom"
+        ],
+        "status": "Ongoing Game"
+    }
+}

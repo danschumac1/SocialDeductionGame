@@ -1,0 +1,20 @@
+[
+    {
+        "player": "meat2",
+        "codename": "Mufasa",
+        "color": "#008000",
+        "message": "Hey"
+    },
+    {
+        "player": "meat",
+        "codename": "Lord Farquad",
+        "color": "#FF0000",
+        "message": "hello this is meat"
+    },
+    {
+        "player": "meat2",
+        "codename": "Mufasa",
+        "color": "#008000",
+        "message": "this is dan!"
+    }
+]

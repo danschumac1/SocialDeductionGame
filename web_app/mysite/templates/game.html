@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dopple Bot</title>
+    <script src="/static/js/game.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="stack" style="--stacks: 3;">
+        <span style="--index: 0;">GET READY TO RUMBLE >:)</span>
+        <span style="--index: 1;">GET READY TO RUMBLE >:)</span>
+        <span style="--index: 2;">GET READY TO RUMBLE >:)</span>
+    </div>
+    <p>Game ID: <span id="gameID">{{ game_id }}</span></p>
+    <div id="chatbox" class="chat-window"></div>
+
+    <input type="text" id="chatInput" placeholder="Type a message...">
+    <button onclick="sendMessage()">Send</button>
+
+</body>
+</html>
