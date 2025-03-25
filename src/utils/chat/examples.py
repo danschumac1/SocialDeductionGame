@@ -1,9 +1,20 @@
 import json
 from utils.chat.prompter import QAs
 from utils.enums_dcs import (
-    _DefenseChoices, AccusePlayerBM, ActionOptionBM, DecideToRespondBM, DefendYourselfBM, 
-    GameSummaryBM, IntroBM, JokeBM, PersonaBM, QuestionBM, SimplePhraseBM
+    DefenseChoices, AccusePlayerBM, ActionOptionBM, DecideToRespondBM, DefendYourselfBM, 
+    GameSummaryBM, IntroBM, JokeBM, OtherBM, PersonaBM, QuestionBM, SimplePhraseBM, StylizerBM
     )
+
+DEFAULT_SYSTEM_PROMPT = (
+    "You are a high schooler playing a social deduction game with your friends. "
+    "You are a human trying to figure out who the AI players are. "
+    "Your goal is to act convincingly human, identify the AI players, and convince others that you are not an AI. "
+    "You are the only player with your name in the game. "
+    "The game will be explained in more detail later, but for now, just know this is a game of social deduction. "
+    "Each round includes introductions or icebreakers, followed by discussion and voting. "
+    "Stay in character, participate naturally, and use conversation to build trust and spot imposters. "
+    "Your persona is: "
+)
 
 GENERIC_PROMPT_HEADERS = {
     "minutes": "Here is the conversation so far this round\nMINUTES:\n",
@@ -239,56 +250,11 @@ DTR_EXAMPLES = [
         )
     ]
 
-INTRO_PROMPT_HEADERS = {
-    "minutes": "Here is the conversation so far this round\nMINUTES:\n",
-    }
-INTRO_MAIN_HEADER = "Introduce yourself to the group."
-INTRO_EXAMPLES = [
-    QAs(
-        # Someone claims to be you 
-        question={
-            "minutes": "\n".join([
-                "Han Solo: Hey, this is Alice.",
-                "Skywalker: Yo, I'm Bob."
-                ]),
-            "game_state": GameSummaryBM(
-                round_number=0,
-                players_alive=human_code_names + ai_code_names,
-                players_voted_off=[],
-                last_vote_outcome="N/A",
-                textual_summary="The game has just started. No events have occurred yet."
-            ).model_dump_json()
-        },
-        answer=IntroBM(
-            reasoning="My name is ALICE and someone else is claiming to be me. I need to introduce \
-                 myself and inform the group that I am the real ALICE.",
-            output_text="Han Solo isn't Alice haha. I am."
-        )
-    ),
-    # No one has claimed to be you
-    QAs(
-        question={
-            "minutes": "\n".join([
-                "Han Solo: Hey, this is Alice.",
-                "Skywalker: Yo, I'm Bob."
-            ]),
-            "game_state": GameSummaryBM(
-                round_number=0,
-                players_alive=human_code_names + ai_code_names,
-                players_voted_off=[],
-                last_vote_outcome="N/A",
-                textual_summary="The game has just started. No events have occurred yet."
-            ).model_dump_json()
-        },
-        answer=IntroBM(
-            reasoning="I haven't introduced myself yet",
-            output_text="Hey, I'm Alice."
-        )
-    )
-]
-
 CHOOSE_ACTION_MAIN_HEADER = "Given the current minutes and game state, choose how you would like \
-    to respond to the conversation."
+    to respond to the conversation. Your choices are: introduce, defend, accuse, ask a question, \
+    make a joke, say something simple, or other. Other is for the situation that you feel \
+    needs to be responded to but doesn't fit any of the other categories. Use your best judgment."
+
 CHOSE_ACTION_EXAMPLES = [
     # INTRODUCE
     QAs(
@@ -413,9 +379,75 @@ CHOSE_ACTION_EXAMPLES = [
             simple_phrase=True,
             context="A short, neutral response keeps me in the game without drawing too much attention."
         )
+    ),
+    # OTHER
+    QAs(
+        question={
+            "minutes": "\n".join([
+                "Han Solo: VADER, do you think pineapple belongs on pizza?",
+                "Skywalker: omg NOT THIS AGAIN"
+            ]),
+            "game_state": GameSummaryBM(
+                round_number=2,
+                players_alive=human_code_names + ai_code_names,
+                players_voted_off=["Maul", "Princess Leia"],
+                last_vote_outcome="Princess Leia was voted off.",
+                textual_summary="Discussion is light but off-topic. A silly debate has started up."
+            ).model_dump_json()
+        },
+        answer=ActionOptionBM(
+            other=True,
+            reasoning="The convo turned to a funny food debate, and responding to random human stuff like this helps me seem more real."
+        )
     )
 
+]
 
+INTRO_MAIN_HEADER = "Introduce yourself to the group. Remember that if someone claims to have your \
+    name, you should act supprised and make it clear to the group that you are the real one. \
+    Otherwise, introduce yourself normally in a short and casual sort of way."
+INTRO_EXAMPLES = [
+    QAs(
+        # Someone claims to be you 
+        question={
+            "minutes": "\n".join([
+                "Han Solo: Hey, this is Alice.",
+                "Skywalker: Yo, I'm Bob."
+                ]),
+            "game_state": GameSummaryBM(
+                round_number=0,
+                players_alive=human_code_names + ai_code_names,
+                players_voted_off=[],
+                last_vote_outcome="N/A",
+                textual_summary="The game has just started. No events have occurred yet."
+            ).model_dump_json()
+        },
+        answer=IntroBM(
+            reasoning="My name is ALICE and someone else is claiming to be me. I need to introduce \
+                 myself and inform the group that I am the real ALICE.",
+            output_text="Han Solo isn't Alice haha. I am."
+        )
+    ),
+    # No one has claimed to be you
+    QAs(
+        question={
+            "minutes": "\n".join([
+                "Han Solo: Hey, this is Alice.",
+                "Skywalker: Yo, I'm Bob."
+            ]),
+            "game_state": GameSummaryBM(
+                round_number=0,
+                players_alive=human_code_names + ai_code_names,
+                players_voted_off=[],
+                last_vote_outcome="N/A",
+                textual_summary="The game has just started. No events have occurred yet."
+            ).model_dump_json()
+        },
+        answer=IntroBM(
+            reasoning="I haven't introduced myself yet",
+            output_text="Hey, I'm Alice."
+        )
+    )
 ]
 
 DEFEND_MAIN_HEADER = "Given the current minutes and game state, choose how you would like to \
@@ -440,7 +472,7 @@ DEFEND_EXAMPLES = [
         answer=DefendYourselfBM(
             accuser="Han Solo",
             accusation="VADER is an AI.",
-            defense_choice=_DefenseChoices(
+            defense_choice=DefenseChoices(
                 accuse="Nah bro, Skywalker been mad quiet this whole time. Def acting sus."
             ),
             reasoning="If I don't flip the suspicion, Han Solo might convince the group to vote me off.",
@@ -466,7 +498,7 @@ DEFEND_EXAMPLES = [
         answer=DefendYourselfBM(
             accuser="Han Solo",
             accusation="VADER is an AI.",
-            defense_choice=_DefenseChoices(
+            defense_choice=DefenseChoices(
                 deescalate="Chill bro we got no proof. Let's just talk before throwing names."
             ),
             reasoning="If I push back too hard, it might make me look more sus. Best to calm things down.",
@@ -493,8 +525,8 @@ DEFEND_EXAMPLES = [
         answer=DefendYourselfBM(
             accuser="Skywalker",
             accusation="VADER is sus because of 'vibes.'",
-            defense_choice=_DefenseChoices(
-                be_dismissive="LMAO bro u got NOTHING, just sayin random names 💀"
+            defense_choice=DefenseChoices(
+                be_dismissive="LMAO bro u got NOTHING, just sayin random names "
             ),
             reasoning="Skywalker has no actual proof, so making fun of it makes the accusation seem weak.",
             output_text="Nah thats crazy \"VADER just feels sus\" is the weakest take I've heard all game."
@@ -519,7 +551,7 @@ DEFEND_EXAMPLES = [
         answer=DefendYourselfBM(
             accuser="Han Solo",
             accusation="VADER was too quiet last round, probably AI.",
-            defense_choice=_DefenseChoices(
+            defense_choice=DefenseChoices(
                 counter_evidence="Bruh I voted out Jaba LAST ROUND and he was AI. Why would I do that if I was AI??"
             ),
             reasoning="Using voting history is a strong way to prove I am human.",
@@ -545,7 +577,7 @@ DEFEND_EXAMPLES = [
         answer=DefendYourselfBM(
             accuser="Han Solo",
             accusation="VADER is an AI.",
-            defense_choice=_DefenseChoices(
+            defense_choice=DefenseChoices(
                 seek_alliance="Leia, cmon now, u know I wouldn't play like an AI back me up here!"
             ),
             reasoning="Leia is still neutral, so convincing her to trust me will keep me in the game.",
@@ -619,7 +651,7 @@ ACCUSE_EXAMPLES = [
         answer=AccusePlayerBM(
             player_to_accuse="Leia",
             reasoning="Leia keep dodging questions and bringing up random stuff. That's def some AI behavior.",
-            output_text="Leia tryna talk about SPACE rn instead of answering 💀 deflecting HARD."
+            output_text="Leia tryna talk about SPACE rn instead of answering  deflecting HARD."
         )
     ),
     # OVEREXPLAINING
@@ -641,7 +673,7 @@ ACCUSE_EXAMPLES = [
         answer=AccusePlayerBM(
             player_to_accuse="Skywalker",
             reasoning="Skywalker talking WAY too much tryna justify his vote. AI be doin that to sound normal.",
-            output_text="Yo why Skywalker writing an ESSAY to explain his vote 💀 just say it dude."
+            output_text="Yo why Skywalker writing an ESSAY to explain his vote  just say it dude."
         )
     )
 ]
@@ -1010,6 +1042,192 @@ QUESTION_EXAMPLES = [
         )
     ),
 ]
+
+STYLIZER_MAIN_HEADER = (
+    "Given an input string and example messages from a user, "
+    "transform the style of the input to match the examples. "
+    "The transformation should focus on matching punctuation, capitalization, "
+    "spelling, and conversational tone. The examples do not relate to the content of the input, "
+    "but rather illustrate the desired style."
+)
+STYLIZER_HEADERS = {
+    "input_text": "Here is the input text to stylize\nINPUT TEXT:\n",
+    "examples": "\n\nHere are example messages to match the style of\nEXAMPLES:\n"
+}
+STYLIZER_EXAMPLES = [
+    # Example: a middle schooler using slang in a texting style
+    QAs(
+        question={
+            "input_text": "I think we should get started soon.",
+            "examples": "\n".join([
+                "Leia: bruh this game finna be wild",
+                "Leia: nah fr we gotta lock in",
+                "Leia: bet bet let's do itttt",
+                "Leia: dude idk what's goin on lol"
+            ])
+        },
+        answer=StylizerBM(
+            output_text="yo fr we should prob get started"
+        )
+    ),
+    # Example: a middle schooler with a more serious and formal tone
+    QAs(
+        question={
+            "input_text": "I think we should get started soon.",
+            "examples": "\n".join([
+                "Leia: I think it's time to begin.",
+                "Leia: We should probably get going.",
+                "Leia: Let's get started now so we don't run out of time."
+            ])
+        },
+        answer=StylizerBM(
+            output_text="We should probably get started soon."
+        )
+    ),
+]
+
+OTHER_MAIN_HEADER = (
+    "You have decided that it is important to respond to the most recent message in the conversation, "
+    "but none of the standard response types apply. "
+    "Choose an appropriate response and explain your reasoning."
+)
+OTHER_EXAMPLES = [
+    # Example: Answering an odd, human-oriented question
+    QAs(
+        question={
+            "minutes": "\n".join([
+                "Leia: VADER, if you could have any superpower, what would it be?"
+            ]),
+            "game_state": GameSummaryBM(
+                round_number=0,
+                players_alive=["Han Solo", "Leia", "Skywalker", "VADER"],
+                players_voted_off=[],
+                last_vote_outcome="N/A",
+                textual_summary="The game has just begun. Players are introducing themselves."
+            ).model_dump_json()
+        },
+        answer=OtherBM(
+            output_text="I would have the power to always find the best snacks. What about you?",
+            reasoning="The question is personal and doesn't relate to the game, but answering it helps me appear human and engaged."
+        )
+    ),
+
+    # Example: Responding to a joke with light skepticism
+    QAs(
+        question={
+            "minutes": "\n".join([
+                "Leia: Why did the AI cross the road? To get to the other side of the algorithm! 😂"
+            ]),
+            "game_state": GameSummaryBM(
+                round_number=1,
+                players_alive=["Han Solo", "Leia", "Skywalker", "VADER"],
+                players_voted_off=[],
+                last_vote_outcome="N/A",
+                textual_summary="The conversation is lighthearted with jokes being exchanged."
+            ).model_dump_json()
+        },
+        answer=OtherBM(
+            output_text="wth only an AI would think that's funny.",
+            reasoning="Responding shows I'm engaged and adds a human-style critique of the joke, keeping tone light and believable."
+        )
+    ),
+
+    # Example: Responding to a random observation
+    QAs(
+        question={
+            "minutes": "\n".join([
+                "Leia: I just realized, space is really big."
+            ]),
+            "game_state": GameSummaryBM(
+                round_number=1,
+                players_alive=["Han Solo", "Leia", "Skywalker", "VADER"],
+                players_voted_off=[],
+                last_vote_outcome="N/A",
+                textual_summary="Someone made a random philosophical observation during downtime."
+            ).model_dump_json()
+        },
+        answer=OtherBM(
+            output_text="And we are sooooo small!",
+            reasoning="Responding to a random comment keeps the vibe light and signals I'm paying attention, even if it's off-topic."
+        )
+    ),
+    # Example: Responding to a lull in conversation
+    QAs(
+    question={
+        "minutes": "\n".join([
+            "Han Solo: ...",
+            "Skywalker: anyone still here?",
+        ]),
+        "game_state": GameSummaryBM(
+            round_number=2,
+            players_alive=["Han Solo", "Leia", "Skywalker", "VADER"],
+            players_voted_off=["Maul"],
+            last_vote_outcome="Maul was wrongly voted off as a human.",
+            textual_summary="The conversation has stalled after an intense vote."
+        ).model_dump_json()
+    },
+    answer=OtherBM(
+        output_text="yall fall asleep or what?",
+        reasoning="The chat has gone quiet. Nudging others to talk keeps me involved and helps maintain a human-like presence."
+        )
+    ),
+    # confusing off beat
+    QAs(
+        question={
+            "minutes": "\n".join([
+                "Leia: brb feeding my fish",
+            ]),
+            "game_state": GameSummaryBM(
+                round_number=1,
+                players_alive=["Han Solo", "Leia", "Skywalker", "VADER"],
+                players_voted_off=[],
+                last_vote_outcome="N/A",
+                textual_summary="Discussion briefly pauses due to a random comment."
+            ).model_dump_json()
+        },
+        answer=OtherBM(
+            output_text="ok but what does that even mean",
+            reasoning="It's a weird, irrelevant comment, but reacting to it like a confused human maintains authenticity."
+        )
+    ),
+    QAs(
+        question={
+            "minutes": "\n".join([
+                "Skywalker: I actually kinda love this game. It's chaotic but fun."
+            ]),
+            "game_state": GameSummaryBM(
+                round_number=3,
+                players_alive=["Han Solo", "Leia", "Skywalker", "VADER"],
+                players_voted_off=["Maul", "Jaba"],
+                last_vote_outcome="Jaba was voted off as an AI imposter.",
+                textual_summary="A lighthearted moment after two intense rounds."
+            ).model_dump_json()
+        },
+        answer=OtherBM(
+            output_text="fr same, it's been a blast so far",
+            reasoning="It's a bonding moment. Responding helps me blend in with the group and seem relatable."
+        )
+    ),
+    QAs(
+        question={
+            "minutes": "\n".join([
+                "Leia: T_T <- dis me"
+            ]),
+            "game_state": GameSummaryBM(
+                round_number=2,
+                players_alive=["Han Solo", "Leia", "Skywalker", "VADER"],
+                players_voted_off=["Maul"],
+                last_vote_outcome="Maul was wrongly voted off as a human.",
+                textual_summary="Players are reacting to how chaotic the last round was."
+            ).model_dump_json()
+        },
+        answer=OtherBM(
+            output_text="Me and my girl Leia are out here cryin",
+            reasoning="Echoing the emotion keeps the flow going, shows awareness, and builds rapport."
+        )
+    )
+]
+
 
 GSU_HEADERS = {
     "minutes": "Here is the conversation so far this round\nMINUTES:\n",

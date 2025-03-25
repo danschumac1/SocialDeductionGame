@@ -5,19 +5,20 @@ from utils.logging_utils import StandAloneLogger
 from utils.chat.examples import (
     GENERIC_PROMPT_HEADERS, CHOOSE_ACTION_MAIN_HEADER, CHOSE_ACTION_EXAMPLES, 
     DEFEND_MAIN_HEADER, DEFEND_EXAMPLES, ACCUSE_MAIN_HEADER, ACCUSE_EXAMPLES, 
-    DTR_EXAMPLES, DTR_MAIN_HEADER,GSU_HEADERS, INTRO_EXAMPLES, INTRO_MAIN_HEADER, INTRO_PROMPT_HEADERS, 
-    JOKE_MAIN_HEADER, JOKE_EXAMPLES, QUESTION_MAIN_HEADER, QUESTION_EXAMPLES, 
-    SIMPLE_PHRASE_MAIN_HEADER, SIMPLE_PHRASE_EXAMPLES, GSU_MAIN_HEADER, GSU_EXAMPLES
+    DTR_EXAMPLES, DTR_MAIN_HEADER,GSU_HEADERS, INTRO_EXAMPLES, INTRO_MAIN_HEADER, JOKE_MAIN_HEADER,
+    JOKE_EXAMPLES, OTHER_EXAMPLES, OTHER_MAIN_HEADER, QUESTION_MAIN_HEADER, QUESTION_EXAMPLES, SIMPLE_PHRASE_MAIN_HEADER, 
+    SIMPLE_PHRASE_EXAMPLES, GSU_MAIN_HEADER, GSU_EXAMPLES, STYLIZER_EXAMPLES, STYLIZER_HEADERS, 
+    STYLIZER_MAIN_HEADER, DEFAULT_SYSTEM_PROMPT
 )
 from utils.enums_dcs import (
-    IntroBM, JokeBM, QuestionBM, SimplePhraseBM, Team, ActionOptionBM, DecideToRespondBM, 
+    IntroBM, JokeBM, QuestionBM, SimplePhraseBM, StylizerBM, Team, ActionOptionBM, DecideToRespondBM, 
     DefendYourselfBM, AccusePlayerBM, GameSummaryBM, PersonaBM
 )
 
 class AIPlayer:
     def __init__(
             self, code_name: str, color: Tuple[int, int, int, int], players_code_names: List[str],
-            persona_to_steal: Union[None, PersonaBM]):
+            persona_to_steal: Union[None, PersonaBM], system_prompt: str = DEFAULT_SYSTEM_PROMPT):
         """Initializes AI player with a generated or stolen persona."""
         self.code_name = code_name
         self.color = color
@@ -32,22 +33,27 @@ class AIPlayer:
         self.players_code_names = players_code_names
         self.team = Team.HUMAN
         self.voting_history = []
+        self.player_minutes = []
         self.has_introduced = False
         self.is_accused = False
         self.is_questioned = False
         self.humans_introduced = 0
         self.persona = self._steal_persona(persona_to_steal)
-        self.system_prompt = (
-            "You are a middle schooler playing a social deduction game with your friends. " 
-            "You are a human trying to figure out who the AI players are. " 
-            "You must convince the other players that you are human while "
-            "trying to identify the AI players. "
-            "Your persona is: " + self.persona.model_dump_json()
-        )
+        self.origin_code_name = persona_to_steal.code_name if persona_to_steal else "N/A"
+        self.system_prompt = system_prompt + self.persona.model_dump_json()
         self.game_summary = self._initialize_game_summary()
 
         # Initialize custom prompter_dict
         self.prompter_dict = {
+            "decide_to_respond": OpenAIPrompter(
+                openai_dict_key="OPENAI_API_KEY",
+                system_prompt=self.system_prompt,
+                examples=DTR_EXAMPLES,
+                prompt_headers=GENERIC_PROMPT_HEADERS,
+                output_format=DecideToRespondBM,
+                main_prompt_header=DTR_MAIN_HEADER
+            ),
+            
             "choose_action": OpenAIPrompter(
                 openai_dict_key="OPENAI_API_KEY",
                 system_prompt=self.system_prompt,
@@ -62,7 +68,16 @@ class AIPlayer:
                 examples=INTRO_EXAMPLES,
                 prompt_headers=GENERIC_PROMPT_HEADERS,
                 output_format=IntroBM,
-                main_prompt_header=INTRO_MAIN_HEADER
+                main_prompt_header=INTRO_MAIN_HEADER,
+                temperature=0.5
+            ),
+            "stylizer": OpenAIPrompter(
+                openai_dict_key="OPENAI_API_KEY",
+                system_prompt=self.system_prompt,
+                examples=STYLIZER_EXAMPLES,
+                prompt_headers=STYLIZER_HEADERS,
+                output_format=StylizerBM,
+                main_prompt_header=STYLIZER_MAIN_HEADER
             ),
             "defend": OpenAIPrompter(
                 openai_dict_key="OPENAI_API_KEY",
@@ -70,7 +85,8 @@ class AIPlayer:
                 examples=DEFEND_EXAMPLES,
                 prompt_headers=GENERIC_PROMPT_HEADERS,
                 output_format=DefendYourselfBM,
-                main_prompt_header=DEFEND_MAIN_HEADER
+                main_prompt_header=DEFEND_MAIN_HEADER,
+                temperature=0.5
             ),
             "accuse": OpenAIPrompter(
                 openai_dict_key="OPENAI_API_KEY",
@@ -78,7 +94,8 @@ class AIPlayer:
                 examples=ACCUSE_EXAMPLES,
                 prompt_headers=GENERIC_PROMPT_HEADERS,
                 output_format=AccusePlayerBM,
-                main_prompt_header=ACCUSE_MAIN_HEADER
+                main_prompt_header=ACCUSE_MAIN_HEADER,
+                temperature=0.5
             ),
             "joke": OpenAIPrompter(
                 openai_dict_key="OPENAI_API_KEY",
@@ -86,7 +103,8 @@ class AIPlayer:
                 examples=JOKE_EXAMPLES,
                 prompt_headers=GENERIC_PROMPT_HEADERS,
                 output_format=JokeBM,
-                main_prompt_header=JOKE_MAIN_HEADER
+                main_prompt_header=JOKE_MAIN_HEADER,
+                temperature=0.5
             ),
             "question": OpenAIPrompter(
                 openai_dict_key="OPENAI_API_KEY",
@@ -94,7 +112,8 @@ class AIPlayer:
                 examples=QUESTION_EXAMPLES,
                 prompt_headers=GENERIC_PROMPT_HEADERS,
                 output_format=QuestionBM,
-                main_prompt_header=QUESTION_MAIN_HEADER
+                main_prompt_header=QUESTION_MAIN_HEADER,
+                temperature=0.5
             ),
             "simple_phrase": OpenAIPrompter(
                 openai_dict_key="OPENAI_API_KEY",
@@ -102,16 +121,19 @@ class AIPlayer:
                 examples=SIMPLE_PHRASE_EXAMPLES,
                 prompt_headers=GENERIC_PROMPT_HEADERS,
                 output_format=SimplePhraseBM,
-                main_prompt_header=SIMPLE_PHRASE_MAIN_HEADER
+                main_prompt_header=SIMPLE_PHRASE_MAIN_HEADER,
+                temperature=0.5
             ),
-            "decide_to_respond": OpenAIPrompter(
+            "other": OpenAIPrompter(
                 openai_dict_key="OPENAI_API_KEY",
                 system_prompt=self.system_prompt,
-                examples=DTR_EXAMPLES,
+                examples=OTHER_EXAMPLES,  # Reusing simple phrase examples for fallback
                 prompt_headers=GENERIC_PROMPT_HEADERS,
-                output_format=DecideToRespondBM,
-                main_prompt_header=DTR_MAIN_HEADER
+                output_format=SimplePhraseBM,
+                main_prompt_header=OTHER_MAIN_HEADER,
+                temperature=0.5
             ),
+             #  Game summary update prompter
             "game_summary_update": OpenAIPrompter(
                 openai_dict_key="OPENAI_API_KEY",
                 system_prompt=self.system_prompt,
@@ -144,17 +166,38 @@ class AIPlayer:
         )
         self.logger.info(f"Stolen persona: {stolen_persona}")
         return stolen_persona
+    
+    def _update_player_minutes(self, minutes: List[str]):
+        """Updates the player minutes with the latest game messages."""
+        if len(minutes) > 0 and minutes[-1].startswith(f"{self.origin_code_name}:"):
+            last_message = minutes[-1].split(": ", 1)[1]  # Extract the message after the player name
+            self.player_minutes.append(last_message)
+
+    def _stylize_output(self, before_styling: str) -> str:
+        """Stylizes the output to better match the human player."""
+        response_json = self.prompter_dict["stylizer"].get_completion({
+            "input_text": before_styling,
+            "player_minutes": self.player_minutes
+        })
+        self.logger.info(f"Response JSON: {response_json}")
+        stylized_response = StylizerBM.model_validate_json(json.dumps(response_json)).output_text
+        return stylized_response
 
     def decide_to_respond(self, minutes: List[str]):
         print("--- decide_to_respond ---")
         """Determines whether AI should respond and what action to take."""
-        # print("MINUTES:", "\n".join(minutes))
+        #  Update player minutes with the latest game messages
+        self._update_player_minutes(minutes)
+        #  Ensure minutes is not empty
+        if not minutes:
+            return "Wait for next message"
 
         #  Get AI's decision
         response_json = self.prompter_dict["decide_to_respond"].get_completion({
             "minutes": minutes,
             "game_summary": self.game_summary
             })
+        self.logger.info(f"Response JSON: {response_json}")
         # print("\tresponse_json:", response_json)
 
         #  Ensure response_json is a string before validation
@@ -178,6 +221,7 @@ class AIPlayer:
             "minutes": minutes,
             "game_summary": self.game_summary
         })
+        self.logger.info(f"Response JSON: {response_json}")
         action = ActionOptionBM.model_validate_json(json.dumps(response_json))
 
         if action.introduce:
@@ -191,8 +235,7 @@ class AIPlayer:
         elif action.question:
             return self.question(minutes)
         else: # if action.simple_phrase or error
-            return self.simple_phrase(minutes)
-
+            return self.other(minutes)
 
     def introduce(self, minutes: List[str]):
         """Introduces the AI player to the game."""
@@ -201,10 +244,13 @@ class AIPlayer:
             "minutes": minutes,
             "game_summary": self.game_summary
         })
+        self.logger.info(f"introduce JSON: {response_json}")
         # print("INTRO RESPONSE:", response_json)
         self.has_introduced = True
         # print(type(response_json))
-        return IntroBM.model_validate_json(json.dumps(response_json)).output_text
+        output = IntroBM.model_validate_json(json.dumps(response_json)).output_text
+        stylized_output = self._stylize_output(output)
+        return stylized_output
     
     def defend(self, minutes: List[str]):
         print("--- DEFEND ---")
@@ -213,7 +259,10 @@ class AIPlayer:
             "minutes": minutes,
             "game_summary": self.game_summary
         })
-        return DefendYourselfBM.model_validate_json(json.dumps(response_json)).output_text
+        self.logger.info(f"defend JSON: {response_json}")
+        output =  DefendYourselfBM.model_validate_json(json.dumps(response_json)).output_text
+        stylized_output = self._stylize_output(output)
+        return stylized_output
     
     def accuse(self, minutes: List[str]):
         """Accuses another player of being a robot."""
@@ -222,7 +271,10 @@ class AIPlayer:
             "minutes": minutes,
             "game_summary": self.game_summary
         })
-        return AccusePlayerBM.model_validate_json(json.dumps(response_json)).output_text
+        self.logger.info(f"accuse JSON: {response_json}")
+        output = AccusePlayerBM.model_validate_json(json.dumps(response_json)).output_text
+        stylized_output = self._stylize_output(output)
+        return stylized_output
     
     def joke(self, minutes: List[str]):
         """Tells a joke to lighten the mood."""
@@ -231,7 +283,10 @@ class AIPlayer:
             "minutes": minutes,
             "game_summary": self.game_summary
         })
-        return JokeBM.model_validate_json(json.dumps(response_json)).output_text
+        self.logger.info(f"joke JSON: {response_json}")
+        output = JokeBM.model_validate_json(json.dumps(response_json)).output_text
+        stylized_output = self._stylize_output(output)
+        return stylized_output
     
     def question(self, minutes: List[str]):
         """Asks another player a question."""
@@ -240,7 +295,10 @@ class AIPlayer:
             "minutes": minutes,
             "game_summary": self.game_summary
         })
-        return QuestionBM.model_validate_json(json.dumps(response_json)).output_text
+        self.logger.info(f"question JSON: {response_json}")
+        output = QuestionBM.model_validate_json(json.dumps(response_json)).output_text
+        stylized_output = self._stylize_output(output)
+        return stylized_output
     
     def simple_phrase(self, minutes: List[str]):
         """Says a simple phrase to keep the conversation going."""
@@ -249,7 +307,22 @@ class AIPlayer:
             "minutes": minutes,
             "game_summary": self.game_summary
         })
-        return SimplePhraseBM.model_validate_json(json.dumps(response_json)).output_text
+        self.logger.info(f"simple_phrase JSON: {response_json}")
+        output = SimplePhraseBM.model_validate_json(json.dumps(response_json)).output_text
+        stylized_output = self._stylize_output(output)
+        return stylized_output
+    
+    def other(self, minutes: List[str]):
+        """Handles any other action that doesn't fit the predefined categories."""
+        print("--- OTHER ---")
+        response_json = self.prompter_dict["other"].get_completion({
+            "minutes": minutes,
+            "game_summary": self.game_summary
+        })
+        self.logger.info(f"other JSON: {response_json}")
+        output = SimplePhraseBM.model_validate_json(json.dumps(response_json)).output_text
+        stylized_output = self._stylize_output(output)
+        return stylized_output
     
     def game_summary_update(self, minutes: List[str], vote_result: dict, game_summary):
         """Updates the game state based on vote results and discussion."""
@@ -259,6 +332,7 @@ class AIPlayer:
             "game_summary": json.loads(game_summary.model_dump_json()),  #  Convert JSON string back into dict
             "vote_result": vote_result  # Already a dict, no need to modify
         })
+        self.logger.info(f"game_summary_update JSON: {response_json}")
         updated_game_summary = GameSummaryBM.model_validate_json(json.dumps(response_json))
         self.game_summary = json.loads(updated_game_summary.model_dump_json())
 

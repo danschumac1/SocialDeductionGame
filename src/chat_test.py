@@ -11,7 +11,8 @@ you_persona = PersonaBM(
     code_name="Gemma&Louisa's Dad",
     hobby="Boxing",
     food="Ming's Dumplings",
-    anythingelse="I love to play board games with my frieds. And do AI research",
+    anythingelse="I love to play board games with my frieds. And do AI research. Dr. Rios is my \
+        professor and mentor. I am a PhD student studying AI and Natural Language Processing.",
     color=(0, 255, 0, 255)
 )
 

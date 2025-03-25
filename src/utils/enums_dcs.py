@@ -1,6 +1,6 @@
 from enum import Enum
 from typing import List, Optional, Tuple
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 class GameState(Enum):
     MAIN_MENU = 0
@@ -27,6 +27,7 @@ class DecideToRespondBM(BaseModel):
     accused: Optional[bool] = False
     havent_answered_latest_icebreaker: Optional[bool] = False
     speak_up: Optional[bool] = False
+    other: Optional[bool] = False  # Placeholder for any other conditions
     reasoning: str # Explanation for why this action was chosen
 
 class ActionOptionBM(BaseModel):
@@ -36,28 +37,33 @@ class ActionOptionBM(BaseModel):
     joke: Optional[bool] = None
     question: Optional[bool] = None
     simple_phrase: Optional[bool] = None
+    other: Optional[bool] = None  # Placeholder for any other actions
     reasoning: str = None  # Explanation for why this action was chosen
 
-    @field_validator("introduce", "defend", "accuse", "joke", "question", "simple_phrase", mode="before")
+    @model_validator(mode="before")
     @classmethod
-    def enforce_single_response(cls, v, info):
-        """Ensures only one response field is populated."""
-        if v is not None:
-            filled_fields = [key for key, value in info.data.items() if value is not None]
-            if len(filled_fields) > 1:
-                raise ValueError(f"Only one response can be provided at a time. Found: {filled_fields}")
-        return v
+    def enforce_exactly_one_true(cls, values):
+        action_fields = ["introduce", "defend", "accuse", "joke", "question", "simple_phrase", "other"]
+        true_fields = [field for field in action_fields if values.get(field) is True]
+
+        if len(true_fields) != 1:
+            raise ValueError(
+                f"Exactly one action must be True. Found {len(true_fields)}: {true_fields}"
+            )
+
+        return values
+
 
 class IntroBM(BaseModel):
     reasoning: str  # Explanation for why this action was chosen
     output_text: str  # The AI's output for the chat
 
-class _DefenseChoices(BaseModel):
-    accuse: Optional[str] = None  # Redirect suspicion to another player
-    deescalate: Optional[str] = None  # Reduce tension and shift focus
-    be_dismissive: Optional[str] = None  # Minimize the accusation’s significance
+class DefenseChoices(BaseModel):
+    accuse: Optional[str] = None            # Redirect suspicion to another player
+    deescalate: Optional[str] = None        # Reduce tension and shift focus
+    be_dismissive: Optional[str] = None     # Minimize the accusation’s significance
     counter_evidence: Optional[str] = None  # Use voting history or logic to counter the claim
-    seek_alliance: Optional[str] = None  # Convince a neutral player to back you up
+    seek_alliance: Optional[str] = None     # Convince a neutral player to back you up
 
     def validate_single_choice(self):
         """Ensures that only ONE choice is made."""
@@ -69,7 +75,7 @@ class _DefenseChoices(BaseModel):
 class DefendYourselfBM(BaseModel):
     accuser: str
     accusation: str
-    defense_choice: _DefenseChoices
+    defense_choice: DefenseChoices
     reasoning: str
     output_text: str # The AI's output for the chat
 
@@ -86,13 +92,6 @@ class AccusePlayerBM(BaseModel):
 class SimplePhraseBM(BaseModel):
     output_text: str  # The short response AI gives
 
-class GameSummaryBM(BaseModel):
-    round_number: int
-    players_alive: List[str]        # List of players still in the game
-    players_voted_off: List[str]    # List of players voted off
-    last_vote_outcome: str  
-    textual_summary: str  # A human-readable summary of the game's progression
-
 class JokeBM(BaseModel):
     output_text: str
     reasoning: str  # Why did the AI pick this joke? What does it hope to achieve?
@@ -105,3 +104,17 @@ class QuestionBM(BaseModel):
     intent: str  # What does the AI want to achieve with this question?
     target_player: Optional[str] = None  # Who is the question aimed at, if anyone?
     strategy_type: Optional[str] = "information"  # Could be: information, pressure, humor
+
+class OtherBM(BaseModel):
+    output_text: str  # Any other action not covered by the above models
+    reasoning: str  # Explanation for why this action was chosen
+
+class StylizerBM(BaseModel):
+    output_text: str  # The text after applying the stylization
+
+class GameSummaryBM(BaseModel):
+    round_number: int
+    players_alive: List[str]        # List of players still in the game
+    players_voted_off: List[str]    # List of players voted off
+    last_vote_outcome: str  
+    textual_summary: str  # A human-readable summary of the game's progression

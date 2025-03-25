@@ -144,15 +144,7 @@ class OpenAIPrompter(Prompter):
     def get_completion(
             self, input_texts: Dict[str, str], parse=True, verbose=False) -> Union[dict, None]:
         """Calls OpenAI API with multiple formatted inputs"""
-        # print("INPUT_TEXTS:", input_texts)
-        # print(type(input_texts))
-        # return
         input_text_str = self._build_messages(input_texts)
-
-        # print("\n========== DEBUG: OpenAI API CALL ==========")
-        # print(json.dumps(input_text_str, indent=4))  #  See exactly what we send
-        # print("============================================\n")
-
         response = self.client.chat.completions.create(
             model=self.llm_model,
             messages=input_text_str,
