@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Info Collection</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!--<h2>Player Information</h2>-->
+    <div class="stack" style="--stacks: 3;">
+            <span style="--index: 0;">Player Information</span>
+            <span style="--index: 1;">Player Information</span>
+            <span style="--index: 2;">Player Information</span>
+        </div>
+    <p><strong>Name:</strong> <span id="playerName"></span></p>
+    <p><strong>Game #:</strong> <span id="gameID">{{ game_id }}</span></p>
+
+    <div class="input-group">
+        <label for="grade">Grade:</label>
+        <input type="text" id="grade" placeholder="Enter your grade" required>
+    </div>
+
+    <div class="input-group">
+        <label for="favFood">Favorite Food:</label>
+        <input type="text" id="favFood" placeholder="Enter your favorite food" required>
+    </div>
+
+    <div class="input-group">
+        <label for="favAnimal">Favorite Animal:</label>
+        <input type="text" id="favAnimal" placeholder="Enter your favorite animal" required>
+    </div>
+
+    <div class="input-group">
+        <label for="favColor">Favorite Color:</label>
+        <input type="text" id="favColor" placeholder="Enter your favorite color" required>
+    </div>
+
+    <div class="input-group">
+        <label for="hobby">Hobby:</label>
+        <input type="text" id="hobby" placeholder="Enter your hobby" required>
+    </div>
+
+    <div class="input-group">
+        <label for="extraInfo">Tell us more about yourself:</label>
+        <textarea id="extraInfo" placeholder="Write about yourself..."></textarea>
+    </div>
+
+    <div class="button-group">
+        <button class="btn-primary" onclick="submitPlayerInfo()">Submit</button>
+    </div>
+
+    <script>
+        document.getElementById("playerName").innerText = sessionStorage.getItem("player_name");
+    </script>
+
+    <script src="/static/js/game.js"></script>
+
+</body>
+</html>

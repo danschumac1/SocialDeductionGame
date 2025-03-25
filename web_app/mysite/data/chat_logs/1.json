@@ -1,0 +1,38 @@
+[
+    {
+        "player": "Boop",
+        "message": "please work"
+    },
+    {
+        "player": "Boop",
+        "message": "test"
+    },
+    {
+        "player": "Boop",
+        "message": "test 2?"
+    },
+    {
+        "player": "Test",
+        "codename": null,
+        "color": null,
+        "message": "test"
+    },
+    {
+        "player": "God",
+        "codename": "undefined",
+        "color": "undefined",
+        "message": "boop"
+    },
+    {
+        "player": "God",
+        "codename": "undefined",
+        "color": "undefined",
+        "message": "test"
+    },
+    {
+        "player": "God",
+        "codename": "undefined",
+        "color": "undefined",
+        "message": "test"
+    }
+]

@@ -1,0 +1,1 @@
+2025-03-25 08:31:14,621 - ERROR - Error in send_message: 'dict' object has no attribute 'splitlines'

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lobby Waiting Room</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            let urlParams = new URLSearchParams(window.location.search);
+            let lobbyId = urlParams.get("lobby_id") || sessionStorage.getItem("lobby_id");
+
+            if (!lobbyId) {
+                console.error("Error: lobby_id is missing.");
+                window.location.href = "/lobby";
+            } else {
+                sessionStorage.setItem("lobby_id", lobbyId);  // Store for future use
+                fetchLobbyDetails(lobbyId);  // Fetch lobby details immediately
+                loadLobbyData(lobbyId);  // Call loadLobbyData with the lobbyId
+            }
+        });
+    </script>
+
+    <script src="/static/js/game.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <!--<h1>Lobby Waiting Room</h1>-->
+        <div class="stack" style="--stacks: 3;">
+            <span style="--index: 0;">Lobby Waiting Room</span>
+            <span style="--index: 1;">Lobby Waiting Room</span>
+            <span style="--index: 2;">Lobby Waiting Room</span>
+        </div>
+        <p>Lobby ID: <span id="lobbyId">{{ lobby_id }}</span></p>
+        <p><span id="playerCount"></span> <span id="waitingMessage">Waiting for players...</span></p>
+        <ul id="playerList"></ul>
+        <button onclick="leaveLobby(sessionStorage.getItem('lobby_id'))">Leave Lobby</button>
+
+        <div class="info-icon">
+            <span class="tooltip">The game will begin once the lobby is full</span>
+            ?
+        </div>
+    </div>
+</body>
+</html>

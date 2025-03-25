@@ -1,0 +1,27 @@
+{
+    "1": {
+        "max_players": 1,
+        "players": [
+            "God"
+        ],
+        "status": "Ongoing Game",
+        "game_id": 24
+    },
+    "2": {
+        "max_players": 1,
+        "players": [
+            "Dan"
+        ],
+        "status": "Ongoing Game",
+        "game_id": 25
+    },
+    "3": {
+        "max_players": 2,
+        "players": [
+            "meat",
+            "meat2"
+        ],
+        "status": "Ongoing Game",
+        "game_id": 26
+    }
+}
