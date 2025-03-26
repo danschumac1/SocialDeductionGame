@@ -48,7 +48,7 @@ class Prompter(ABC):
 
     def _load_env(self) -> str:
         """Loads API key from .env"""
-        load_dotenv("./web_app/resources/.env")
+        load_dotenv("./resources/.env")
         api_key = os.getenv(self.api_env_key)
         if not api_key:
             raise ValueError(f"API Key not found. Set {self.api_env_key}=xxxx in ./resources/.env")
