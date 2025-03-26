@@ -2,7 +2,7 @@
 python ./src/chat_test.py
 '''
 from utils.enums_dcs import GameSummaryBM, PersonaBM, Team
-from utils.chat.chat import AIPlayer
+from utils.ai import AIPlayer
 
 # Initialize AI Player
 # XXX FILL THIS IN AS YOU XXX

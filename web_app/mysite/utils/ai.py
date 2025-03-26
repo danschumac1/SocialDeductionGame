@@ -2,9 +2,9 @@ import json
 from typing import List, Tuple, Union
 from functools import wraps
 import inspect
-from utils.chat.prompter import OpenAIPrompter
+from utils.prompter import OpenAIPrompter
 from utils.logging_utils import StandAloneLogger
-from utils.chat.examples import (
+from utils.examples import (
     GENERIC_PROMPT_HEADERS, CHOOSE_ACTION_MAIN_HEADER, CHOSE_ACTION_EXAMPLES, 
     DEFEND_MAIN_HEADER, DEFEND_EXAMPLES, ACCUSE_MAIN_HEADER, ACCUSE_EXAMPLES, 
     DTR_EXAMPLES, DTR_MAIN_HEADER,GSU_HEADERS, INTRO_EXAMPLES, INTRO_MAIN_HEADER, JOKE_MAIN_HEADER,

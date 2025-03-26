@@ -1,5 +1,5 @@
 import json
-from utils.chat.prompter import QAs
+from utils.prompter import QAs
 from utils.enums_dcs import (
     DefenseChoices, AccusePlayerBM, ActionOptionBM, DecideToRespondBM, DefendYourselfBM, 
     GameSummaryBM, IntroBM, JokeBM, OtherBM, PersonaBM, QuestionBM, SimplePhraseBM, StylizerBM

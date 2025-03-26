@@ -6,13 +6,7 @@ How to run:
 '''
 import json
 from dotenv import load_dotenv
-from typing import List, Union
-from pydantic import BaseModel
-from abc import ABC, abstractmethod
-import openai
-import os
-from dotenv import load_dotenv
-from typing import List, Dict
+from typing import List, Union, Dict
 from pydantic import BaseModel
 from abc import ABC, abstractmethod
 import openai
@@ -54,7 +48,7 @@ class Prompter(ABC):
 
     def _load_env(self) -> str:
         """Loads API key from .env"""
-        load_dotenv("./resources/.env")
+        load_dotenv("./web_app/resources/.env")
         api_key = os.getenv(self.api_env_key)
         if not api_key:
             raise ValueError(f"API Key not found. Set {self.api_env_key}=xxxx in ./resources/.env")
